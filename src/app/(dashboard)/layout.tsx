@@ -61,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       />
 
       {/* Main content */}
-      <main className="flex-1 p-6 overflow-auto md:ml-64">{children}</main>
+      <main className="flex-1  overflow-auto md:ml-0">{children}</main>
     </div>
   );
 }

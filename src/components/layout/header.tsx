@@ -3,7 +3,7 @@ import { HeartIcon } from "@heroicons/react/24/outline";
 
 export default function Header() {
   return (
-    <header className="w-full h-16 flex flex-col justify-center items-center p-3 sm:flex-row sm:justify-between">
+    <header className="w-full h-16 flex flex-col justify-center items-center p-3 md:flex-row md:justify-between">
       <Link href="/">
         <div className="flex items-center gap-2">
           <HeartIcon className="h-6 w-6" />
