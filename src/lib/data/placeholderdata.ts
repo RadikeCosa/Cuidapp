@@ -3,7 +3,7 @@ import type { Patient } from "@/lib/schema/patient.schema";
 import { validatePatients } from "@/lib/schema/patient.schema";
 
 // Datos raw sin validar
-const rawPatients = [
+const rawPatientsData = [
   {
     id: "1",
     name: "Juan Pérez",
@@ -37,7 +37,7 @@ const rawPatients = [
     dni: "55667788",
     date_of_birth: "1982-11-25",
     createdAt: "2025-06-04",
-    status: "active",
+    status: "deceased",
     image_url: "/placeholder.jpg",
   },
   {
@@ -49,12 +49,12 @@ const rawPatients = [
     status: "active",
     image_url: "/placeholder.jpg",
   },
-] as const;
+];
 
-// Exportamos los datos validados
-export const patients: Patient[] = validatePatients([...rawPatients]);
+// Exportar datos validados
+export const patients: Patient[] = validatePatients(rawPatientsData);
 
 // Función helper para obtener un paciente por ID
-export function getPatientById(id: string): Patient | undefined {
+export const getPatientById = (id: string): Patient | undefined => {
   return patients.find((patient) => patient.id === id);
-}
+};

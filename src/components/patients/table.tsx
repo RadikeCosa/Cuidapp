@@ -1,12 +1,11 @@
 // src/components/patients/table.tsx
-
 import Image from "next/image";
 import Link from "next/link";
 import PatientStatus from "@/components/patients/status";
+import { formatAge } from "@/lib/utils/dateUtils";
 import { patients } from "@/lib/data/placeholderdata";
 
 export default function PatientsTable() {
-  // Early return si no hay pacientes
   if (patients.length === 0) {
     return (
       <div className="mt-6 p-6 text-center text-gray-500">
@@ -19,39 +18,55 @@ export default function PatientsTable() {
     <div className="mt-6 overflow-x-auto">
       <table className="w-full text-sm text-gray-800">
         <thead>
-          <tr className="bg-gray-100 text-left font-medium">
-            <th className="px-4 py-3">Nombre</th>
-            <th className="px-4 py-3">DNI</th>
-            <th className="px-4 py-3">Estado</th>
+          <tr className="bg-gradient-to-r from-gray-50 to-gray-100 text-left font-semibold text-gray-700 border-b-2 border-gray-200">
+            <th className="px-3 py-2 text-xs uppercase tracking-wide">
+              Paciente
+            </th>
+            <th className="px-3 py-2 text-xs uppercase tracking-wide">Edad</th>
+            <th className="px-3 py-2 text-xs uppercase tracking-wide">
+              Estado
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white">
-          {patients.map((patient) => (
+        <tbody className="bg-white divide-y divide-gray-100">
+          {patients.map((patient, index) => (
             <tr
               key={patient.id}
-              className="border-t last:border-b hover:bg-gray-50 transition-colors"
+              className={`
+                hover:bg-blue-50 transition-all duration-200 hover:shadow-sm
+                ${index % 2 === 0 ? "bg-white" : "bg-gray-50/30"}
+              `}
             >
-              <td className="px-4 py-3">
+              <td className="px-3 py-2">
                 <Link
                   href={`/patients/${patient.id}`}
-                  className="flex items-center gap-3 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2 group"
                 >
-                  <Image
-                    src={patient.image_url ?? "/placeholder.jpg"}
-                    alt={`${patient.name}'s profile picture`}
-                    width={28}
-                    height={28}
-                    className="rounded-full object-cover"
-                  />
-                  <span className="font-medium text-gray-900 hover:text-blue-600">
-                    {patient.name}
-                  </span>
+                  <div className="relative">
+                    <Image
+                      src={patient.image_url ?? "/placeholder.jpg"}
+                      alt={`${patient.name}'s profile`}
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-300 transition-all"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors block truncate">
+                      {patient.name}
+                    </span>
+                    <span className="text-xs text-gray-500 block">
+                      DNI: {patient.dni}
+                    </span>
+                  </div>
                 </Link>
               </td>
-              <td className="px-4 py-3">
-                <span className="text-gray-600">{patient.dni}</span>
+              <td className="px-3 py-2">
+                <span className="text-sm font-medium text-gray-700">
+                  {formatAge(patient.date_of_birth)}
+                </span>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-3 py-2">
                 <PatientStatus status={patient.status ?? "active"} />
               </td>
             </tr>

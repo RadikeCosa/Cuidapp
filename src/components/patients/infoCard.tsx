@@ -1,4 +1,4 @@
-import { formatDateToLocal, formatAge } from "@/lib/utils/dateUtils";
+import { formatAge } from "@/lib/utils/dateUtils";
 import PatientStatus from "./status";
 import type { Patient } from "@/lib/schema/patient.schema";
 
