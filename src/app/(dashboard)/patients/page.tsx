@@ -4,7 +4,7 @@ import PatientsViewContainer from "@/components/patients/patients-view-container
 
 export default function PatientsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ml-2">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Módulo Pacientes</h1>
