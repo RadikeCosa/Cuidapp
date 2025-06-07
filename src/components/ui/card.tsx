@@ -1,3 +1,4 @@
+//src/components/ui/card.tsx
 import {
   UserGroupIcon,
   UserMinusIcon,
@@ -10,7 +11,7 @@ const iconMap = {
   activePatients: UserGroupIcon, // For active patients
   inactivePatients: UserMinusIcon, // For inactive patients
   oldestPatient: UserIcon, // For oldest patient
-  totalCarePlans: HeartIcon, // For total care plans or another metric
+  longestPatient: HeartIcon, // For total care plans or another metric
 };
 
 // Card component for displaying home care statistics
@@ -25,7 +26,7 @@ export function Card({
     | "activePatients"
     | "inactivePatients"
     | "oldestPatient"
-    | "totalCarePlans"; // Define allowed types
+    | "longestPatient"; // Define allowed types
 }) {
   const Icon = iconMap[type];
 
