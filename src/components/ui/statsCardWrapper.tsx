@@ -1,6 +1,6 @@
 //src/components/ui/cardWrapper.tsx
 
-import { Card } from "./card";
+import { Card } from "./statsCard";
 
 export default function CardWrapper() {
   return (
