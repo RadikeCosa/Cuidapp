@@ -3,9 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import PatientStatus from "@/components/patients/status";
 import { formatAge } from "@/lib/utils/dateUtils";
-import { patients } from "@/lib/data/placeholderdata";
+import type { Patient } from "@/lib/schema/patient.schema";
 
-export default function PatientsCompactCards() {
+interface PatientsCompactCardsProps {
+  patients: Patient[];
+}
+
+/**
+ * ESTE ES UN SERVER COMPONENT
+ * - Solo renderiza datos, sin interactividad
+ * - Se ejecuta en el servidor
+ * - Recibe datos como props
+ * - Mejor performance y SEO
+ */
+export default function PatientsCompactCards({
+  patients,
+}: PatientsCompactCardsProps) {
   if (patients.length === 0) {
     return (
       <div className="mt-6 p-8 text-center">
