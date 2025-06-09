@@ -9,6 +9,7 @@ type ViewType = "table" | "cards";
 interface ViewToggleProps {
   onViewChange: (view: ViewType) => void;
   currentView: ViewType;
+  disabled?: boolean;
 }
 
 export default function ViewToggle({
