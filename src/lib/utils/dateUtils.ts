@@ -1,12 +1,4 @@
 /**
- * Verifica si una fecha en string ISO es válida.
- */
-function isValidDate(dateStr: string): boolean {
-  const date = new Date(dateStr);
-  return !isNaN(date.getTime());
-}
-
-/**
  * Convierte un string ISO en objeto Date válido o lanza un error.
  */
 function parseDate(dateStr: string): Date {

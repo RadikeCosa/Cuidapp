@@ -1,7 +1,6 @@
 // src/components/patients/view-toggle.tsx
 "use client";
 
-import { useState } from "react";
 import { LayoutGrid, List } from "lucide-react";
 
 type ViewType = "table" | "cards";
