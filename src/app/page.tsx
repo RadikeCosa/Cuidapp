@@ -22,7 +22,7 @@ export default function Home() {
             <span>Módulo Pacientes</span>
           </Link>
           <Link
-            href="/"
+            href="https://cuidapp-documentation.vercel.app/"
             className="flex items-center gap-3 px-5 py-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-700 font-medium shadow-sm"
             target="_blank"
             rel="noopener noreferrer"
