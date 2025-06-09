@@ -12,9 +12,18 @@ const PatientSchema = z.object({
   name: z.string(),
   dni: z.string(),
   date_of_birth: z.string(),
-  // Campos nuevos - opcionales para flexibilidad
+  // Campos de contacto existentes
   address: z.string().optional(),
   phone: z.string().optional(),
+  // Nuevos campos de contacto
+  email: z.string().email().optional(), // Validación de formato email
+  emergency_contact: z
+    .object({
+      name: z.string().optional(),
+      phone: z.string().optional(),
+    })
+    .optional(),
+  contact_notes: z.string().optional(),
   // Campos existentes
   createdAt: z.string().optional(),
   status: PatientStatusEnum.optional().default("active"),
@@ -32,16 +41,3 @@ export function validatePatients(data: unknown[]): Patient[] {
 }
 
 export { PatientSchema };
-
-/**
- * CHANGELOG v1.1.0:
- *
- * ✅ Agregados campos de contacto:
- *   - address: Dirección del paciente (opcional)
- *   - phone: Número de contacto (opcional)
- *
- * 📝 Decisiones técnicas:
- *   - Campos opcionales para mantener compatibilidad
- *   - Validación con Zod mantiene integridad de datos
- *   - Preparado para migración directa a Supabase
- */

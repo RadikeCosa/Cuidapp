@@ -1,4 +1,3 @@
-// src/lib/data/placeholderdata.ts
 import type { Patient } from "@/lib/schema/patient.schema";
 import { validatePatients } from "@/lib/schema/patient.schema";
 
@@ -10,6 +9,12 @@ const rawPatientsData = [
     date_of_birth: "1985-03-15",
     address: "Av. San Martín 1234, Neuquén Capital",
     phone: "+54 299 456-7890",
+    email: "maria.rodriguez@email.com",
+    emergency_contact: {
+      name: "Juan Pérez",
+      phone: "+54 299 111-2222",
+    },
+    contact_notes: "Prefiere contacto por email. Timbre en puerta trasera.",
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-01-15T10:30:00Z",
@@ -21,6 +26,12 @@ const rawPatientsData = [
     date_of_birth: "1990-07-22",
     address: "Av. Olascoaga 567, Neuquén Capital",
     phone: "+54 299 567-8901",
+    email: undefined, // Sin email para probar fallback
+    emergency_contact: {
+      name: "Ana Gutiérrez",
+      phone: undefined, // Sin teléfono de emergencia
+    },
+    contact_notes: undefined, // Sin notas
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-02-10T14:20:00Z",
@@ -32,6 +43,9 @@ const rawPatientsData = [
     date_of_birth: "1978-11-05",
     address: "Av. Roca 1200, Cipolletti",
     phone: "+54 299 678-9012",
+    email: "lucia.mendoza@email.com",
+    emergency_contact: undefined, // Sin contacto de emergencia
+    contact_notes: "Horario de contacto: 9-12hs.",
     status: "inactive",
     image_url: "/placeholder.jpg",
     createdAt: "2024-03-05T09:15:00Z",
@@ -43,6 +57,12 @@ const rawPatientsData = [
     date_of_birth: "1982-09-18",
     address: "Ruta 22 Km 12, Plottier",
     phone: "+54 299 789-0123",
+    email: "roberto.sosa@email.com",
+    emergency_contact: {
+      name: "Laura Sosa",
+      phone: "+54 299 333-4444",
+    },
+    contact_notes: undefined, // Sin notas
     status: "deceased",
     image_url: "/placeholder.jpg",
     createdAt: "2024-04-18T16:40:00Z",
@@ -54,6 +74,12 @@ const rawPatientsData = [
     date_of_birth: "1995-02-28",
     address: "Av. del Trabajador 345, Centenario",
     phone: "+54 299 890-1234",
+    email: undefined, // Sin email
+    emergency_contact: {
+      name: undefined, // Sin nombre de emergencia
+      phone: "+54 299 555-6666",
+    },
+    contact_notes: "Acceso por portón lateral.",
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-05-22T11:05:00Z",
@@ -65,6 +91,12 @@ const rawPatientsData = [
     date_of_birth: "1988-12-10",
     address: "Calle Leloir 789, Neuquén Capital",
     phone: "+54 299 901-2345",
+    email: "fernando.lagos@email.com",
+    emergency_contact: {
+      name: "Sofía Lagos",
+      phone: "+54 299 777-8888",
+    },
+    contact_notes: "Paciente requiere asistencia para abrir la puerta.",
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-06-30T08:45:00Z",
@@ -76,6 +108,9 @@ const rawPatientsData = [
     date_of_birth: "1975-06-25",
     address: "Av. Argentina 2100, Cipolletti",
     phone: "+54 299 012-3456",
+    email: undefined, // Sin email
+    emergency_contact: undefined, // Sin contacto de emergencia
+    contact_notes: undefined, // Sin notas
     status: "inactive",
     image_url: "/placeholder.jpg",
     createdAt: "2024-07-12T13:20:00Z",
@@ -87,6 +122,12 @@ const rawPatientsData = [
     date_of_birth: "1992-04-08",
     address: "Ruta 151 Km 5, Plottier",
     phone: "+54 299 123-4567",
+    email: "miguel.castro@email.com",
+    emergency_contact: {
+      name: "Elena Castro",
+      phone: undefined, // Sin teléfono de emergencia
+    },
+    contact_notes: "Contactar después de las 15hs.",
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-08-25T17:30:00Z",
@@ -98,6 +139,12 @@ const rawPatientsData = [
     date_of_birth: "1980-01-14",
     address: "Calle Los Alerces 456, Centenario",
     phone: "+54 299 234-5678",
+    email: "daniela.morales@email.com",
+    emergency_contact: {
+      name: "Pablo Morales",
+      phone: "+54 299 999-0000",
+    },
+    contact_notes: undefined, // Sin notas
     status: "active",
     image_url: "/placeholder.jpg",
     createdAt: "2024-09-03T10:10:00Z",
@@ -109,6 +156,9 @@ const rawPatientsData = [
     date_of_birth: "1970-08-30",
     address: "Av. O'Higgins 789, Neuquén Capital",
     phone: "+54 299 345-6789",
+    email: undefined, // Sin email
+    emergency_contact: undefined, // Sin contacto de emergencia
+    contact_notes: "Prefiere contacto telefónico.",
     status: "deceased",
     image_url: "/placeholder.jpg",
     createdAt: "2024-10-19T15:25:00Z",

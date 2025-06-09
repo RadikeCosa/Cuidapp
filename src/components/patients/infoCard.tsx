@@ -9,11 +9,10 @@ interface PatientInfoCardProps {
 }
 
 /**
- * ESTE ES UN SERVER COMPONENT MEJORADO v1.1.0
- * - Información más completa del paciente
- * - Campos de contacto integrados
- * - Mejor layout y diseño
- * - Preparado para agregar más campos
+ * ESTE ES UN SERVER COMPONENT MEJORADO v1.2.0
+ * - Nuevos campos de contacto: email, emergency_contact, contact_notes
+ * - Mantiene diseño limpio y escalable
+ * - Preparado para Supabase y futuras integraciones
  */
 export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
   return (
@@ -56,17 +55,16 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
 
       {/* Contenido principal */}
       <div className="p-6">
-        <dl className="grid grid-cols-1">
+        <dl className="grid grid-cols-1 gap-y-4">
           {/* Información personal */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2"></div>
             <div className="flex items-center gap-2">
               <dt className="sr-only">Dirección</dt>
               <dd
                 className="text-sm text-gray-900 truncate"
                 title={patient.address}
               >
-                {patient.address}
+                {patient.address ?? "Sin dirección"}
               </dd>
             </div>
             <div className="flex items-center gap-2">
@@ -98,18 +96,103 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                 )}
               </dd>
             </div>
+            <div className="flex items-center gap-2">
+              <dt className="sr-only">Correo electrónico</dt>
+              <dd>
+                {patient.email ? (
+                  <a
+                    href={`mailto:${patient.email}`}
+                    className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-1 text-blue-500"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                    {patient.email}
+                  </a>
+                ) : (
+                  <span className="text-gray-400 text-sm">Sin correo</span>
+                )}
+              </dd>
+            </div>
           </div>
 
-          {/* Información de contacto adicional (fácil de escalar) */}
-          <div className="space-y-2">
-            {/* Aquí puedes agregar más campos de contacto en el futuro */}
-          </div>
+          {/* Información de contacto de emergencia */}
+          {patient.emergency_contact && (
+            <div className="space-y-2 border-t border-gray-200 pt-4">
+              <h3 className="text-sm font-medium text-gray-900">
+                Contacto de Emergencia
+              </h3>
+              <div className="flex items-center gap-2">
+                <dt className="sr-only">Nombre de contacto de emergencia</dt>
+                <dd
+                  className="text-sm text-gray-900 truncate"
+                  title={patient.emergency_contact.name}
+                >
+                  {patient.emergency_contact.name ?? "Sin nombre"}
+                </dd>
+              </div>
+              <div className="flex items-center gap-2">
+                <dt className="sr-only">Teléfono de emergencia</dt>
+                <dd>
+                  {patient.emergency_contact.phone ? (
+                    <a
+                      href={`tel:${patient.emergency_contact.phone}`}
+                      className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-1 text-blue-500"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.52l.3 1.2a2 2 0 01-.45 1.95l-.7.7a16.06 16.06 0 006.36 6.36l.7-.7a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.82 23 1 16.18 1 8V7a2 2 0 012-2z"
+                        />
+                      </svg>
+                      {patient.emergency_contact.phone}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 text-sm">Sin teléfono</span>
+                  )}
+                </dd>
+              </div>
+            </div>
+          )}
+
+          {/* Notas de contacto */}
+          {patient.contact_notes && (
+            <div className="space-y-2 border-t border-gray-200 pt-4">
+              <h3 className="text-sm font-medium text-gray-900">
+                Notas de Contacto
+              </h3>
+              <dd
+                className="text-sm text-gray-900 truncate"
+                title={patient.contact_notes}
+              >
+                {patient.contact_notes}
+              </dd>
+            </div>
+          )}
         </dl>
 
         {/* Sección de acciones */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="flex flex-col items-center gap-4 w-full">
-            {/* Acciones principales */}
             <div className="flex flex-wrap justify-center gap-3 w-full">
               <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
                 Registrar Evaluación
@@ -121,7 +204,6 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                 Coordinar Visita
               </button>
             </div>
-            {/* Acciones secundarias */}
             <div className="flex flex-wrap justify-center gap-3 w-full">
               <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium">
                 Ver
@@ -161,26 +243,26 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
 }
 
 /**
- * MEJORAS IMPLEMENTADAS v1.1.0:
+ * MEJORAS IMPLEMENTADAS v1.2.0:
  *
  * ✅ NUEVOS CAMPOS DE CONTACTO:
- * - Dirección con layout flexible para textos largos
- * - Teléfono como enlace clickeable (tel:)
- * - Campos opcionales con manejo elegante de undefined
+ * - Email con validación de formato y enlace mailto:
+ * - Contacto de emergencia con nombre y teléfono
+ * - Notas de contacto para información adicional
  *
  * ✅ MEJORAS DE UX:
- * - Reorganización de secciones más lógica
- * - "Información de Contacto" como sección separada
- * - Enlaces de teléfono funcionales para mobile
+ * - Secciones claras para contacto de emergencia y notas
+ * - Manejo consistente de campos opcionales
+ * - Diseño escalable con Tailwind
  *
  * ✅ PREPARADO PARA SUPABASE:
- * - Campos mapeables directamente
- * - Validación con schema Zod
- * - Estructura escalable
+ * - Nuevos campos mapeables directamente
+ * - Validación robusta con Zod
+ * - Estructura lista para edición inline y mapas
  *
  * PREPARADO PARA:
- * - Agregar validación de formatos (teléfono, dirección)
- * - Implementar edición inline
- * - Integrar con mapas (Google Maps / OpenStreetMap)
- * - Añadir múltiples números de contacto
+ * - Validación avanzada de formatos (teléfono, email)
+ * - Integración con mapas para direcciones
+ * - Edición inline de campos
+ * - Soporte para múltiples contactos de emergencia
  */
