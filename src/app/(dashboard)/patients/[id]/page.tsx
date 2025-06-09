@@ -5,8 +5,9 @@ import PatientInfoCard from "@/components/patients/infoCard";
 import { PatientsService } from "@/lib/services/patients-service";
 import { notFound } from "next/navigation";
 
+// Update the interface to match Next.js PageProps
 interface PatientDetailPageProps {
-  params: { id: string };
+  params: { id: string | string[] }; // Allow string or string[] for dynamic params
 }
 
 /**
@@ -19,8 +20,11 @@ interface PatientDetailPageProps {
 export default async function PatientDetailPage({
   params,
 }: PatientDetailPageProps) {
+  // Handle the case where params.id might be a string array
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+
   // Data fetching en Server Component
-  const patient = await PatientsService.getPatientById(params.id);
+  const patient = await PatientsService.getPatientById(id);
 
   // Next.js maneja automáticamente el 404
   if (!patient) {
