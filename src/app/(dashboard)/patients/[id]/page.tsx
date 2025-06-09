@@ -5,9 +5,9 @@ import PatientInfoCard from "@/components/patients/infoCard";
 import { PatientsService } from "@/lib/services/patients-service";
 import { notFound } from "next/navigation";
 
-// Update the interface to match Next.js PageProps
+// Updated interface to match Next.js 15 PageProps requirement
 interface PatientDetailPageProps {
-  params: { id: string | string[] }; // Allow string or string[] for dynamic params
+  params: Promise<{ id: string }>; // params is now a Promise in Next.js 15
 }
 
 /**
@@ -20,8 +20,8 @@ interface PatientDetailPageProps {
 export default async function PatientDetailPage({
   params,
 }: PatientDetailPageProps) {
-  // Handle the case where params.id might be a string array
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  // Await the params Promise to get the actual parameters
+  const { id } = await params;
 
   // Data fetching en Server Component
   const patient = await PatientsService.getPatientById(id);
