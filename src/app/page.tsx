@@ -4,8 +4,8 @@ import { PaperClipIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 p-8 flex flex-col items-center">
+    <main className="flex-1 flex flex-col items-center justify-center bg-gray-50">
+      <div className="w-full max-w-lg mt-3 bg-white rounded-2xl shadow-xl border border-gray-100 p-8 flex flex-col items-center">
         <h1 className="text-3xl font-bold text-blue-700 mb-2 text-center">
           CuidApp
         </h1>
