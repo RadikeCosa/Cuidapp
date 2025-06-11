@@ -1,5 +1,4 @@
 // app/(dashboard)/patients/page.tsx - VERSIÓN OPTIMIZADA CON SUSPENSE
-import { Suspense } from "react";
 import { EnhancedStatsGrid } from "@/components/ui/enhanced-stats-cards";
 import PatientsViewContainer from "@/components/patients/patients-view-container";
 import {

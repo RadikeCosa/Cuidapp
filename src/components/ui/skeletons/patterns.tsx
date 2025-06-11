@@ -1,7 +1,5 @@
 import { Skeleton } from "./skeleton";
-function cn(...classes: (string | undefined | false | null)[]): string {
-  return classes.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/utils/cn";
 
 // Patrón: Avatar con badge opcional
 export function SkeletonAvatar({
