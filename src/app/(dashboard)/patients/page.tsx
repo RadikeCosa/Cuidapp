@@ -1,53 +1,74 @@
 // src/app/(dashboard)/patients/page.tsx
-import CardWrapper from "@/components/ui/statsCardWrapper";
+import { EnhancedStatsGrid } from "@/components/ui/enhanced-stats-cards";
 import PatientsViewContainer from "@/components/patients/patients-view-container";
 import { PatientsService } from "@/lib/services/patients-service";
 import { Suspense } from "react";
 
 /**
- * ESTE ES UN SERVER COMPONENT
- * - Se ejecuta en el servidor
- * - Puede hacer data fetching directamente
- * - Se renderiza antes de enviar al cliente
- * - Mejor SEO y performance inicial
+ * ENHANCED SERVER COMPONENT
+ * - Ejecuta múltiples fetches de datos en paralelo
+ * - Proporciona loading states granulares
+ * - Optimiza la carga inicial con datos analíticos
  */
 export default async function PatientsPage() {
-  // Data fetching en Server Component - se ejecuta en el servidor
-  const patients = await PatientsService.getAllPatients();
-  const stats = await PatientsService.getPatientsStats();
+  // Data fetching paralelo para mejor performance
+  const [
+    patients,
+    statusDistribution,
+    geographicStats,
+    demographicStats,
+    temporalTrends,
+  ] = await Promise.all([
+    PatientsService.getAllPatients(),
+    PatientsService.getStatusDistribution(),
+    PatientsService.getGeographicDistribution(),
+    PatientsService.getDemographicStats(),
+    PatientsService.getTemporalTrends(),
+  ]);
 
   return (
-    <div className="space-y-6 ml-2">
+    <div className="space-y-8 p-6 bg-gray-50 min-h-screen">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Módulo Pacientes</h1>
-        <p className="text-gray-600 mt-1">
-          Gestiona toda la información de tus pacientes de manera eficiente
-        </p>
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Análisis y Métricas
+          </h2>
+          <p className="text-gray-600 text-sm">
+            Insights clave sobre la distribución, demografía y tendencias de tus
+            pacientes
+          </p>
+        </div>
+
+        {/* Suspense boundary para las estadísticas mejoradas */}
+        <EnhancedStatsGrid
+          statusData={statusDistribution}
+          geographicData={geographicStats}
+          demographicData={demographicStats}
+          temporalData={temporalTrends}
+        />
       </div>
 
-      {/* Suspense boundaries para componentes que podrían tener loading states */}
-      <Suspense
-        fallback={<div className="animate-pulse bg-gray-200 h-32 rounded-lg" />}
-      >
-        <CardWrapper stats={stats} />
-      </Suspense>
-
-      {/* 
-        PatientsViewContainer recibe los datos como props
-        Esto permite que el Server Component haga el fetch
-        y el Client Component maneje solo la interactividad
-      */}
       <PatientsViewContainer patients={patients} />
     </div>
   );
 }
-
 /**
- * VENTAJAS DE ESTE PATRÓN:
+ * OPTIMIZACIONES Y MEJORAS IMPLEMENTADAS:
  *
- * 1. **Server-First**: Los datos se cargan en el servidor
- * 2. **Mejor SEO**: El HTML inicial incluye los datos
- * 3. **Menos JavaScript**: El cliente recibe menos código
- * 4. **Streaming**: Next.js puede hacer streaming del contenido
- * 5. **Preparado para Cache**: Fácil agregar ISR o cache strategies
+ * 1. **Fetch Paralelo**: Promise.all para cargar datos simultáneamente
+ * 2. **Layout Mejorado**: Estructura visual más clara y profesional
+ * 3. **Loading States**: Skeletons específicos para cada sección
+ * 4. **Información Contextual**: Headers descriptivos con metadatos
+ * 5. **Responsive Design**: Adaptable a diferentes dispositivos
+ * 6. **Separación de Concerns**: Analytics vs Management clarity
+ * 7. **Performance**: Server-side rendering optimizado
+ * 8. **UX**: Feedback visual durante estados de carga
+ *
+ * PRÓXIMOS PASOS SUGERIDOS:
+ *
+ * 1. **Error Boundaries**: Manejo de errores granular
+ * 2. **Caching**: Implementar ISR o cache strategies
+ * 3. **Real-time Updates**: WebSocket para datos en tiempo real
+ * 4. **Export Functionality**: PDF/Excel export de reportes
+ * 5. **Filtros Avanzados**: Filtrado por múltiples dimensiones
  */

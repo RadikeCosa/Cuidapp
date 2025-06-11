@@ -38,7 +38,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h1
-              className="text-2xl font-bold text-white mb-1 truncate"
+              className="text-l font-bold text-white mb-1 truncate"
               title={patient.name}
             >
               {patient.name}
