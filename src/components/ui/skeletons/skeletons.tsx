@@ -1,5 +1,3 @@
-// components/patients/suspense-wrappers.tsx
-import { Suspense } from "react";
 import {
   SkeletonStatCard,
   SkeletonTableRow,
@@ -7,7 +5,6 @@ import {
 } from "@/components/ui/skeletons/patterns";
 import { Skeleton } from "@/components/ui/skeletons/skeleton";
 
-// Loading para Stats Grid
 export function StatsGridSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -101,14 +98,18 @@ export function ViewTransitionSkeleton({
     </div>
   );
 }
-
-// Wrapper con Suspense para componentes async
-export function SuspenseWrapper({
-  children,
-  fallback,
-}: {
-  children: React.ReactNode;
-  fallback: React.ReactNode;
-}) {
-  return <Suspense fallback={fallback}>{children}</Suspense>;
+export function PatientsListSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-4 w-60" />
+        </div>
+        <Skeleton className="h-10 w-32 rounded-lg" />
+      </div>
+      <Skeleton className="h-4 w-32" />
+      <Skeleton className="h-96 rounded-lg" />
+    </div>
+  );
 }

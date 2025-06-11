@@ -5,7 +5,6 @@ import { useState, useTransition, Suspense } from "react";
 import ViewToggle from "./view-toggle";
 import PatientsTable from "./table";
 import PatientsCompactCards from "./compact-cards";
-import { ViewTransitionSkeleton } from "./suspense-wrappers";
 import type { Patient } from "@/lib/schema/patient.schema";
 
 type ViewType = "table" | "cards";
@@ -61,26 +60,12 @@ export default function PatientsViewContainer({
         />
       </div>
 
-      {/* Contenido con Suspense y transiciones suaves */}
-      <div className="min-h-[400px]">
-        {" "}
-        {/* Altura mínima para evitar layout shifts */}
-        <Suspense
-          fallback={
-            <ViewTransitionSkeleton
-              view={currentView}
-              itemCount={patients.length}
-            />
-          }
-        >
-          <div
-            className={`transition-all duration-300 ease-in-out ${
-              isPending ? "opacity-50" : "opacity-100"
-            }`}
-          >
-            <PatientsView patients={patients} view={currentView} />
-          </div>
-        </Suspense>
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          isPending ? "opacity-50" : "opacity-100"
+        }`}
+      >
+        <PatientsView patients={patients} view={currentView} />
       </div>
     </div>
   );
