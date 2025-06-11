@@ -2,7 +2,6 @@
 import { EnhancedStatsGrid } from "@/components/ui/enhanced-stats-cards";
 import PatientsViewContainer from "@/components/patients/patients-view-container";
 import { PatientsService } from "@/lib/services/patients-service";
-import { Suspense } from "react";
 
 /**
  * ENHANCED SERVER COMPONENT
