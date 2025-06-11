@@ -1,11 +1,11 @@
-// components/patients/patients-view-container.tsx (con loading states)
+// components/patients/patients-view-container.tsx - VERSIÓN OPTIMIZADA
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, Suspense } from "react";
 import ViewToggle from "./view-toggle";
 import PatientsTable from "./table";
 import PatientsCompactCards from "./compact-cards";
-import { ViewSpecificSkeleton } from "@/components/ui/skeletons/view-specific-skeletons";
+import { ViewTransitionSkeleton } from "./suspense-wrappers";
 import type { Patient } from "@/lib/schema/patient.schema";
 
 type ViewType = "table" | "cards";
@@ -14,11 +14,20 @@ interface PatientsViewContainerProps {
   patients: Patient[];
 }
 
-/**
- * Container con loading states granulares
- * - Loading específico para cambios de vista
- * - Transiciones suaves entre estados
- */
+// Componente que renderiza la vista actual con Suspense
+function PatientsView({
+  patients,
+  view,
+}: {
+  patients: Patient[];
+  view: ViewType;
+}) {
+  if (view === "table") {
+    return <PatientsTable patients={patients} />;
+  }
+  return <PatientsCompactCards patients={patients} />;
+}
+
 export default function PatientsViewContainer({
   patients,
 }: PatientsViewContainerProps) {
@@ -35,7 +44,7 @@ export default function PatientsViewContainer({
 
   return (
     <div className="space-y-4">
-      {/* Header con toggle */}
+      {/* Header fijo - no afectado por transitions */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">
@@ -52,18 +61,27 @@ export default function PatientsViewContainer({
         />
       </div>
 
-      {/* Contenido con loading state granular */}
-      {isPending ? (
-        <ViewSpecificSkeleton view={currentView} itemCount={patients.length} />
-      ) : (
-        <div className="transition-all duration-300 ease-in-out">
-          {currentView === "table" ? (
-            <PatientsTable patients={patients} />
-          ) : (
-            <PatientsCompactCards patients={patients} />
-          )}
-        </div>
-      )}
+      {/* Contenido con Suspense y transiciones suaves */}
+      <div className="min-h-[400px]">
+        {" "}
+        {/* Altura mínima para evitar layout shifts */}
+        <Suspense
+          fallback={
+            <ViewTransitionSkeleton
+              view={currentView}
+              itemCount={patients.length}
+            />
+          }
+        >
+          <div
+            className={`transition-all duration-300 ease-in-out ${
+              isPending ? "opacity-50" : "opacity-100"
+            }`}
+          >
+            <PatientsView patients={patients} view={currentView} />
+          </div>
+        </Suspense>
+      </div>
     </div>
   );
 }
