@@ -19,7 +19,6 @@ const rawPatientsData = [
     createdAt: "2024-01-15T10:30:00Z",
     updatedAt: "2024-02-01T14:20:00Z",
     status: "active",
-    image_url: "/avatars/maria.jpg",
   },
   {
     id: "2",
@@ -82,7 +81,6 @@ const rawPatientsData = [
     email: "elena.fernandez@email.com",
     createdAt: "2024-04-05T15:20:00Z",
     status: "active",
-    image_url: "/avatars/elena.jpg",
   },
   {
     id: "6",
