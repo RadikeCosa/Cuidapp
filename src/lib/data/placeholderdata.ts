@@ -1,5 +1,5 @@
 import type { Patient } from "@/lib/schema/patient.schema";
-import { validatePatients } from "@/lib/schema/patient.schema";
+import { validatePatients } from "@/lib/validators/patient-validator";
 
 const rawPatientsData = [
   {

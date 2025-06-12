@@ -1,6 +1,6 @@
 // components/patients/stats-section.tsx
 import { EnhancedStatsGrid } from "@/components/patients/enhanced-stats-cards";
-import { PatientsService } from "@/lib/services/patients-service";
+import { PatientsStatsService } from "@/lib/services/patient-stats-service";
 
 export async function StatsSection() {
   const [
@@ -9,10 +9,10 @@ export async function StatsSection() {
     demographicStats,
     temporalTrends,
   ] = await Promise.all([
-    PatientsService.getStatusDistribution(),
-    PatientsService.getGeographicDistribution(),
-    PatientsService.getDemographicStats(),
-    PatientsService.getTemporalTrends(),
+    PatientsStatsService.getStatusDistribution(),
+    PatientsStatsService.getGeographicDistribution(),
+    PatientsStatsService.getDemographicStats(),
+    PatientsStatsService.getTemporalTrends(),
   ]);
 
   return (
