@@ -1,5 +1,5 @@
 {
-  "rawPatients": [
+  "patients": [
     {
       "id": "1",
       "name": "María González",
@@ -233,5 +233,30 @@
       "createdAt": "2024-05-30T07:25:00Z",
       "status": "active"
     }
-  ]
+  ],
+  "stats": {
+    "statusDistribution": {
+      "counts": { "active": 1, "inactive": 0, "deceased": 0 },
+      "percentages": { "active": 100, "inactive": 0, "deceased": 0 },
+      "total": 1,
+      "dominant": "active"
+    },
+    "geographicStats": {
+      "totalCities": 1,
+      "topCities": [{ "city": "Buenos Aires", "count": 1 }],
+      "coverage": { "withCity": 1, "total": 1 }
+    },
+    "demographicStats": {
+      "ageStats": { "average": 44, "youngest": 44, "oldest": 44 },
+      "dominantAgeGroup": "40-64",
+      "totalWithAgeData": 1
+    },
+    "temporalTrends": {
+      "thisMonth": 20,
+      "lastMonth": 10,
+      "trend": "up",
+      "changePercentage": -100,
+      "averageMonthlyGrowth": 20
+    }
+  }
 }

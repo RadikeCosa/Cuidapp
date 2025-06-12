@@ -1,19 +1,9 @@
 // components/patients/stats-section.tsx
 import { EnhancedStatsGrid } from "@/components/patients/enhanced-stats-cards";
-import { PatientsStatsService } from "@/lib/services/patient-stats-service";
+import { PatientsService } from "@/lib/services/patients-service";
 
 export async function StatsSection() {
-  const [
-    statusDistribution,
-    geographicStats,
-    demographicStats,
-    temporalTrends,
-  ] = await Promise.all([
-    PatientsStatsService.getStatusDistribution(),
-    PatientsStatsService.getGeographicDistribution(),
-    PatientsStatsService.getDemographicStats(),
-    PatientsStatsService.getTemporalTrends(),
-  ]);
+  const stats = await PatientsService.getStats();
 
   return (
     <div className="mb-8">
@@ -28,10 +18,10 @@ export async function StatsSection() {
       </div>
 
       <EnhancedStatsGrid
-        statusData={statusDistribution}
-        geographicData={geographicStats}
-        demographicData={demographicStats}
-        temporalData={temporalTrends}
+        statusData={stats.statusDistribution}
+        geographicData={stats.geographicStats}
+        demographicData={stats.demographicStats}
+        temporalData={stats.temporalTrends}
       />
     </div>
   );

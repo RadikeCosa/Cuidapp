@@ -1,48 +1,48 @@
 // lib/services/patients-service.ts
 import { Patient } from "@/lib/schema/patient.schema";
-import { validatedPatients } from "@/lib/data/validatedPatients";
-import { NetworkSimulator } from "@/lib/services/network-simulator";
+import {
+  validatePatients,
+  validatePatient,
+} from "@/lib/validators/patient-validator";
 
 /**
  * Servicio de pacientes - Responsabilidad única: Acceso a datos
  * Solo se encarga de obtener y buscar pacientes, sin procesar estadísticas
  */
+// ...existing code...
+const API_URL = process.env.JSON_SERVER_URL || "http://localhost:3001";
+
 export class PatientsService {
-  /**
-   * Obtiene todos los pacientes
-   * Futura implementación: fetch('/api/patients')
-   */
   static async getAllPatients(): Promise<Patient[]> {
-    await NetworkSimulator.simulateNetworkCall();
-    return validatedPatients;
+    const res = await fetch(`${API_URL}/patients`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Error al obtener pacientes");
+    const data = await res.json();
+    return validatePatients(data); // sigue usando Zod
   }
 
-  /**
-   * Obtiene un paciente por ID
-   * Futura implementación: fetch(`/api/patients/${id}`)
-   */
   static async getPatientById(id: string): Promise<Patient | null> {
-    await NetworkSimulator.simulateNetworkCall();
-    const patient = validatedPatients.find((p) => p.id === id);
-    return patient || null;
+    const res = await fetch(`${API_URL}/patients/${id}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    try {
+      return validatePatient(data);
+    } catch {
+      return null;
+    }
   }
 
-  /**
-   * Busca pacientes por término
-   * Futura implementación: fetch(`/api/patients/search?q=${query}`)
-   */
   static async searchPatients(query: string): Promise<Patient[]> {
-    await NetworkSimulator.simulateNetworkCall();
-
-    if (!query.trim()) return validatedPatients;
-
-    const lowercaseQuery = query.toLowerCase();
-    return validatedPatients.filter(
-      (patient) =>
-        patient.name.toLowerCase().includes(lowercaseQuery) ||
-        patient.dni.includes(query) ||
-        patient.city?.toLowerCase().includes(lowercaseQuery) ||
-        patient.neighborhood?.toLowerCase().includes(lowercaseQuery)
+    const res = await fetch(
+      `${API_URL}/patients?q=${encodeURIComponent(query)}`,
+      { cache: "no-store" }
     );
+    if (!res.ok) throw new Error("Error al buscar pacientes");
+    const data = await res.json();
+    return validatePatients(data);
+  }
+  static async getStats() {
+    const res = await fetch(`${API_URL}/stats`, { cache: "no-store" });
+    if (!res.ok) throw new Error("No se pudieron obtener las estadísticas");
+    return res.json();
   }
 }
