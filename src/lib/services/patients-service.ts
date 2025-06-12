@@ -1,6 +1,6 @@
 // lib/services/patients-service.ts
 import { Patient } from "@/lib/schema/patient.schema";
-import { patients } from "@/lib/data/placeholderdata";
+import { validatedPatients } from "@/lib/data/validatedPatients";
 import { NetworkSimulator } from "@/lib/services/network-simulator";
 
 /**
@@ -14,7 +14,7 @@ export class PatientsService {
    */
   static async getAllPatients(): Promise<Patient[]> {
     await NetworkSimulator.simulateNetworkCall();
-    return patients;
+    return validatedPatients;
   }
 
   /**
@@ -23,7 +23,7 @@ export class PatientsService {
    */
   static async getPatientById(id: string): Promise<Patient | null> {
     await NetworkSimulator.simulateNetworkCall();
-    const patient = patients.find((p) => p.id === id);
+    const patient = validatedPatients.find((p) => p.id === id);
     return patient || null;
   }
 
@@ -34,10 +34,10 @@ export class PatientsService {
   static async searchPatients(query: string): Promise<Patient[]> {
     await NetworkSimulator.simulateNetworkCall();
 
-    if (!query.trim()) return patients;
+    if (!query.trim()) return validatedPatients;
 
     const lowercaseQuery = query.toLowerCase();
-    return patients.filter(
+    return validatedPatients.filter(
       (patient) =>
         patient.name.toLowerCase().includes(lowercaseQuery) ||
         patient.dni.includes(query) ||
