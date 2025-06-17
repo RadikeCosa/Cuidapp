@@ -13,13 +13,30 @@ export class PatientsService {
   /**
    * Obtiene todos los pacientes desde Supabase
    */
+  private static handleSupabaseError(error: any) {
+    if (error) throw new Error(error.message);
+  }
+  private static buildPatientWithRelations(
+    patient: any,
+    emergency_contact: any,
+    contact_notes_data: any
+  ) {
+    return {
+      ...patient,
+      emergency_contact: emergency_contact || null,
+      contact_notes:
+        contact_notes_data && contact_notes_data.length > 0
+          ? contact_notes_data.map((n: any) => n.note).join(" | ")
+          : undefined,
+    };
+  }
   static async getAllPatients(): Promise<Patient[]> {
     const { data, error } = await supabase
       .from("patients")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) throw new Error(error.message);
+    this.handleSupabaseError(error);
     return validatePatients(data || []);
   }
 
@@ -54,14 +71,11 @@ export class PatientsService {
       .eq("patient_id", id);
 
     // 4. Armar el objeto paciente extendido
-    const patientWithRelations = {
-      ...patient,
-      emergency_contact: emergency_contact || null,
-      contact_notes:
-        contact_notes_data && contact_notes_data.length > 0
-          ? contact_notes_data.map((n) => n.note).join(" | ")
-          : undefined,
-    };
+    const patientWithRelations = this.buildPatientWithRelations(
+      patient,
+      emergency_contact,
+      contact_notes_data
+    );
 
     // 5. Validar con Zod
     try {
@@ -79,7 +93,7 @@ export class PatientsService {
       .from("patients")
       .select("*");
 
-    if (error) throw new Error(error.message);
+    this.handleSupabaseError(error);
     return calculatePatientStats(validatePatients(patients || []));
   }
 }

@@ -1,5 +1,49 @@
 import { Patient } from "@/lib/schema/patient.schema";
 
+// --- CONSTANTES Y HELPERS CLEAN CODE ---
+const VALID_STATUSES = ["active", "inactive", "deceased"] as const;
+type StatusKey = (typeof VALID_STATUSES)[number];
+const VALID_GENDERS = ["male", "female", "other", "unknown"] as const;
+type GenderKey = (typeof VALID_GENDERS)[number];
+
+function initCounts<T extends string>(keys: readonly T[]): Record<T, number> {
+  return keys.reduce((acc, key) => {
+    acc[key] = 0;
+    return acc;
+  }, {} as Record<T, number>);
+}
+
+function calcPercentages<T extends string>(
+  counts: Record<T, number>,
+  total: number
+): Record<T, number> {
+  return Object.entries(counts).reduce((acc, [k, v]) => {
+    acc[k as T] = total ? Math.round(((v as number) / total) * 100) : 0;
+    return acc;
+  }, {} as Record<T, number>);
+}
+
+function getDominantKey<T extends string>(
+  counts: Record<T, number>,
+  fallback: T
+): T {
+  const dominant = Object.entries(counts).sort(
+    (a, b) => (b[1] as number) - (a[1] as number)
+  )[0];
+  return (dominant?.[0] as T) ?? fallback;
+}
+
+function calculateAge(birthDate: string, today: Date): number {
+  const birth = new Date(birthDate);
+  let age = today.getFullYear() - birth.getFullYear();
+  if (
+    today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate())
+  ) {
+    age--;
+  }
+  return age;
+}
+
 /**
  * Calcula estadísticas a partir de un array de pacientes.
  */
@@ -7,10 +51,10 @@ export function calculatePatientStats(patients: Patient[]) {
   if (!patients || patients.length === 0) {
     return {
       statusDistribution: {
-        counts: { active: 0, inactive: 0, deceased: 0 },
-        percentages: { active: 0, inactive: 0, deceased: 0 },
+        counts: initCounts(VALID_STATUSES),
+        percentages: initCounts(VALID_STATUSES),
         total: 0,
-        dominant: "active" as "active",
+        dominant: "active" as StatusKey,
       },
       geographicStats: {
         totalCities: 0,
@@ -23,34 +67,17 @@ export function calculatePatientStats(patients: Patient[]) {
         totalWithAgeData: 0,
       },
       genderDistribution: {
-        counts: { male: 0, female: 0, other: 0, unknown: 0 },
-        percentages: { male: 0, female: 0, other: 0, unknown: 0 },
+        counts: initCounts(VALID_GENDERS),
+        percentages: initCounts(VALID_GENDERS),
         total: 0,
-        dominant: "unknown" as "unknown",
+        dominant: "unknown" as GenderKey,
       },
     };
   }
 
-  // Status
-  const validStatuses = ["active", "inactive", "deceased"] as const;
-  type StatusKey = (typeof validStatuses)[number];
-  const statusCounts: Record<StatusKey, number> = {
-    active: 0,
-    inactive: 0,
-    deceased: 0,
-  };
-  // Gender
-  const validGenders = ["male", "female", "other", "unknown"] as const;
-  type GenderKey = (typeof validGenders)[number];
-  const genderCounts: Record<GenderKey, number> = {
-    male: 0,
-    female: 0,
-    other: 0,
-    unknown: 0,
-  };
-  // Cities
+  const statusCounts = initCounts(VALID_STATUSES);
+  const genderCounts = initCounts(VALID_GENDERS);
   const cities = {} as Record<string, number>;
-  // Age
   let sumAges = 0,
     youngest = Infinity,
     oldest = -Infinity,
@@ -59,10 +86,9 @@ export function calculatePatientStats(patients: Patient[]) {
 
   for (const p of patients) {
     // Status
-    if (validStatuses.includes(p.status as StatusKey)) {
+    if (VALID_STATUSES.includes(p.status as StatusKey)) {
       statusCounts[p.status as StatusKey]++;
     }
-    // Gender
     // Gender
     let gender: GenderKey = "unknown";
     const genderValue = (p.gender || "").toString().toLowerCase();
@@ -75,14 +101,7 @@ export function calculatePatientStats(patients: Patient[]) {
     if (p.city) cities[p.city] = (cities[p.city] || 0) + 1;
     // Age
     if (p.date_of_birth) {
-      const birth = new Date(p.date_of_birth);
-      const age =
-        today.getFullYear() -
-        birth.getFullYear() -
-        (today <
-        new Date(today.getFullYear(), birth.getMonth(), birth.getDate())
-          ? 1
-          : 0);
+      const age = calculateAge(p.date_of_birth, today);
       sumAges += age;
       youngest = Math.min(youngest, age);
       oldest = Math.max(oldest, age);
@@ -91,10 +110,7 @@ export function calculatePatientStats(patients: Patient[]) {
   }
 
   const total = patients.length;
-  const dominantEntry = Object.entries(statusCounts).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
-  const dominant = (dominantEntry?.[0] as StatusKey) ?? "active";
+  const dominant = getDominantKey(statusCounts, "active");
   const topCities = Object.entries(cities)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
@@ -107,31 +123,13 @@ export function calculatePatientStats(patients: Patient[]) {
 
   // Gender stats
   const genderTotal = Object.values(genderCounts).reduce((a, b) => a + b, 0);
-  const genderPercentages: Record<GenderKey, number> = {
-    male: genderTotal ? Math.round((genderCounts.male / genderTotal) * 100) : 0,
-    female: genderTotal
-      ? Math.round((genderCounts.female / genderTotal) * 100)
-      : 0,
-    other: genderTotal
-      ? Math.round((genderCounts.other / genderTotal) * 100)
-      : 0,
-    unknown: genderTotal
-      ? Math.round((genderCounts.unknown / genderTotal) * 100)
-      : 0,
-  };
-  const dominantGenderEntry = Object.entries(genderCounts).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
-  const dominantGender = (dominantGenderEntry?.[0] as GenderKey) ?? "unknown";
+  const genderPercentages = calcPercentages(genderCounts, genderTotal);
+  const dominantGender = getDominantKey(genderCounts, "unknown");
 
   return {
     statusDistribution: {
       counts: statusCounts,
-      percentages: {
-        active: total ? Math.round((statusCounts.active / total) * 100) : 0,
-        inactive: total ? Math.round((statusCounts.inactive / total) * 100) : 0,
-        deceased: total ? Math.round((statusCounts.deceased / total) * 100) : 0,
-      },
+      percentages: calcPercentages(statusCounts, total),
       total,
       dominant,
     },
