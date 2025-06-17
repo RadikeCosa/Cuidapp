@@ -6,6 +6,7 @@ import ViewToggle from "./view-toggle";
 import PatientsTable from "./table";
 import PatientsCompactCards from "./compact-cards";
 import type { Patient } from "@/lib/schema/patient.schema";
+import PatientsCount from "./patient-count";
 
 type ViewType = "table" | "cards";
 
@@ -59,6 +60,8 @@ export default function PatientsViewContainer({
           disabled={isPending}
         />
       </div>
+      {/* Contador de pacientes */}
+      <PatientsCount count={patients.length} />
 
       <div
         className={`transition-all duration-300 ease-in-out ${

@@ -10,6 +10,19 @@ import {
   MinusIcon,
 } from "@heroicons/react/24/outline";
 
+// --- CONSTANTES EXTRAÍDAS ---
+const statusLabels = {
+  active: "Activos",
+  inactive: "Inactivos",
+  deceased: "Fallecidos",
+};
+
+const statusColors = {
+  active: "bg-green-100 text-green-800",
+  inactive: "bg-yellow-100 text-yellow-800",
+  deceased: "bg-gray-100 text-gray-800",
+};
+
 // Tipos para las diferentes tarjetas
 type BaseCardProps = {
   className?: string;
@@ -29,18 +42,6 @@ export function StatusDistributionCard({
   data,
   className = "",
 }: StatusDistributionCardProps) {
-  const statusLabels = {
-    active: "Activos",
-    inactive: "Inactivos",
-    deceased: "Fallecidos",
-  };
-
-  const statusColors = {
-    active: "bg-green-100 text-green-800",
-    inactive: "bg-yellow-100 text-yellow-800",
-    deceased: "bg-gray-100 text-gray-800",
-  };
-
   return (
     <div
       className={`rounded-xl bg-white p-6 shadow-sm border border-gray-100 ${className}`}
@@ -354,5 +355,4 @@ export function EnhancedStatsGrid({
  * 4. **Responsive**: Adaptable a diferentes tamaños de pantalla
  * 5. **Tipado Fuerte**: Props específicos para cada tipo de datos
  * 6. **Accesibilidad**: Colores con buen contraste y estructura semántica
- * 7. **Visual Hierarchy**: Uso de tamaños de fuente y colores para priorizar información
- */
+ * 7. **Visual Hierarchy**: Uso de tamaños de fuente y colores*/

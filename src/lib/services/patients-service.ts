@@ -4,6 +4,7 @@ import {
   validatePatients,
   validatePatient,
 } from "@/lib/validators/patient-validator";
+import { supabase } from "@/lib/supabase"; // ya lo tenés configurado
 
 /**
  * Servicio de pacientes - Responsabilidad única: Acceso a datos
@@ -44,5 +45,37 @@ export class PatientsService {
     const res = await fetch(`${API_URL}/stats`, { cache: "no-store" });
     if (!res.ok) throw new Error("No se pudieron obtener las estadísticas");
     return res.json();
+  }
+  static async getAllPatientsFromSupabase(): Promise<Patient[]> {
+    const { data, error } = await supabase
+      .from("patients")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+    // Validá con Zod como ya hacés
+    return validatePatients(data || []);
+  }
+
+  /**
+   * Obtiene un paciente por ID desde Supabase
+   */
+  static async getPatientByIdFromSupabase(id: string): Promise<Patient | null> {
+    const { data, error } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      // Si no existe, devolvé null (no tires error)
+      if (error.code === "PGRST116") return null;
+      throw new Error(error.message);
+    }
+    try {
+      return validatePatient(data);
+    } catch {
+      return null;
+    }
   }
 }
