@@ -62,7 +62,14 @@ export default function PatientsCompactCards({
                   </h3>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-600">
-                      {formatAge(patient.date_of_birth)}
+                      {formatAge(patient.date_of_birth)} ·{" "}
+                      {patient.gender === "male"
+                        ? "Masculino"
+                        : patient.gender === "female"
+                        ? "Femenino"
+                        : patient.gender === "other"
+                        ? "Otro"
+                        : "Sin especificar"}
                     </p>
                     <p className="text-xs text-gray-400">DNI: {patient.dni}</p>
                   </div>

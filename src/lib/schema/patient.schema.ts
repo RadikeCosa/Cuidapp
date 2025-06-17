@@ -4,8 +4,12 @@ import { z } from "zod";
 // Enum reutilizable para status
 export const PatientStatusEnum = z.enum(["active", "inactive", "deceased"]);
 
+// Enum para género
+export const PatientGenderEnum = z.enum(["male", "female", "other", "unknown"]);
+
 // Tipo TypeScript inferido desde el enum Zod
 export type PatientStatus = z.infer<typeof PatientStatusEnum>;
+export type PatientGender = z.infer<typeof PatientGenderEnum>;
 
 // Esquema principal del paciente - SOLO estructura y validaciones
 export const PatientSchema = z.object({
@@ -20,6 +24,7 @@ export const PatientSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha debe estar en formato YYYY-MM-DD")
     .refine((date) => !isNaN(Date.parse(date)), "Fecha inválida"),
+  gender: PatientGenderEnum,
   // Campos de contacto existentes
   address: z.string().trim().optional(),
   city: z.string().min(1, "La ciudad es requerida").trim(),

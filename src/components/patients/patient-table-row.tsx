@@ -8,6 +8,7 @@ import type { Patient } from "@/lib/schema/patient.schema";
 interface PatientTableRowProps {
   patient: Patient;
   className?: string;
+  showGender?: boolean; // <--- agrega esto
 }
 
 export default function PatientTableRow({
@@ -48,6 +49,17 @@ export default function PatientTableRow({
       <td className="px-3 py-2">
         <span className="text-sm font-medium text-gray-700">
           {formatAge(patient.date_of_birth)}
+        </span>
+      </td>
+      <td className="px-3 py-2">
+        <span className="text-sm text-gray-700">
+          {patient.gender === "male"
+            ? "Masculino"
+            : patient.gender === "female"
+            ? "Femenino"
+            : patient.gender === "other"
+            ? "Otro"
+            : "Sin especificar"}
         </span>
       </td>
       <td className="px-3 py-2">

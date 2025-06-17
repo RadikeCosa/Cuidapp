@@ -33,6 +33,9 @@ export default function PatientsTable({ patients }: PatientsTableProps) {
             </th>
             <th className="px-3 py-2 text-xs uppercase tracking-wide">Edad</th>
             <th className="px-3 py-2 text-xs uppercase tracking-wide">
+              Género
+            </th>
+            <th className="px-3 py-2 text-xs uppercase tracking-wide">
               Estado
             </th>
           </tr>
@@ -43,6 +46,7 @@ export default function PatientsTable({ patients }: PatientsTableProps) {
               key={patient.id}
               patient={patient}
               className={index % 2 === 0 ? "bg-white" : "bg-gray-50/30"}
+              showGender={true} // <--- agrega esto
             />
           ))}
         </tbody>

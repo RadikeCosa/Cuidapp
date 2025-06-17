@@ -10,6 +10,7 @@ export async function POST() {
         name: "María González",
         dni: "12345678",
         date_of_birth: "1945-03-15",
+        gender: "female", // <--- NUEVO
         address: "Av. San Martín 1234",
         city: "Neuquén",
         neighborhood: "Centro",
@@ -21,6 +22,7 @@ export async function POST() {
         name: "Carlos Rodríguez",
         dni: "23456789",
         date_of_birth: "1952-07-22",
+        gender: "male", // <--- NUEVO
         address: "Calle Belgrano 567",
         city: "Cipolletti",
         neighborhood: "Villa Obrera",

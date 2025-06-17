@@ -3,7 +3,7 @@ import { EnhancedStatsGrid } from "@/components/patients/enhanced-stats-cards";
 import { PatientsService } from "@/lib/services/patients-service";
 
 export async function StatsSection() {
-  const stats = await PatientsService.getStatsFromSupabase();
+  const stats = await PatientsService.getStats();
   return (
     <div className="mb-8">
       <div className="mb-6">
