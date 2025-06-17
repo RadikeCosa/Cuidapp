@@ -4,6 +4,7 @@ import Link from "next/link";
 import PatientStatus from "@/components/patients/status";
 import { formatAge } from "@/lib/utils/dateUtils";
 import type { Patient } from "@/lib/schema/patient.schema";
+import EmptyPatientsMessage from "./empty-patients-message";
 
 interface PatientsCompactCardsProps {
   patients: Patient[];
@@ -20,45 +21,11 @@ export default function PatientsCompactCards({
   patients,
 }: PatientsCompactCardsProps) {
   if (patients.length === 0) {
-    return (
-      <div className="mt-6 p-8 text-center">
-        <div className="rounded-lg bg-gray-50 p-6">
-          <div className="mx-auto w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-6 h-6 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No hay pacientes registrados
-          </h3>
-          <p className="text-gray-500">
-            Agrega tu primer paciente para comenzar
-          </p>
-        </div>
-      </div>
-    );
+    return <EmptyPatientsMessage />;
   }
 
   return (
     <div className="mt-6">
-      {/* Contador de resultados */}
-      <div className="mb-4">
-        <p className="text-sm text-gray-600">
-          Mostrando <span className="font-medium">{patients.length}</span>{" "}
-          pacientes
-        </p>
-      </div>
-
       {/* Grid de cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
         {patients.map((patient) => (
@@ -95,7 +62,14 @@ export default function PatientsCompactCards({
                   </h3>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-600">
-                      {formatAge(patient.date_of_birth)}
+                      {formatAge(patient.date_of_birth)} ·{" "}
+                      {patient.gender === "male"
+                        ? "Masculino"
+                        : patient.gender === "female"
+                        ? "Femenino"
+                        : patient.gender === "other"
+                        ? "Otro"
+                        : "Sin especificar"}
                     </p>
                     <p className="text-xs text-gray-400">DNI: {patient.dni}</p>
                   </div>

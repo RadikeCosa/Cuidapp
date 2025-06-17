@@ -9,10 +9,44 @@ import {
   ArrowTrendingDownIcon,
   MinusIcon,
 } from "@heroicons/react/24/outline";
+import { UsersIcon } from "@heroicons/react/24/outline";
+
+// --- CONSTANTES EXTRAÍDAS ---
+const statusLabels = {
+  active: "Activos",
+  inactive: "Inactivos",
+  deceased: "Fallecidos",
+};
+
+const statusColors = {
+  active: "bg-green-100 text-green-800",
+  inactive: "bg-yellow-100 text-yellow-800",
+  deceased: "bg-gray-100 text-gray-800",
+};
 
 // Tipos para las diferentes tarjetas
 type BaseCardProps = {
   className?: string;
+};
+type GenderDistributionCardProps = BaseCardProps & {
+  data: {
+    counts: Record<"male" | "female" | "other" | "unknown", number>;
+    percentages: Record<"male" | "female" | "other" | "unknown", number>;
+    total: number;
+    dominant: "male" | "female" | "other" | "unknown";
+  };
+};
+const genderLabels = {
+  male: "Masculino",
+  female: "Femenino",
+  other: "Otro",
+  unknown: "Sin especificar",
+};
+const genderColors = {
+  male: "bg-blue-100 text-blue-800",
+  female: "bg-pink-100 text-pink-800",
+  other: "bg-yellow-100 text-yellow-800",
+  unknown: "bg-gray-100 text-gray-800",
 };
 
 // 1. TARJETA DE DISTRIBUCIÓN POR STATUS
@@ -29,18 +63,6 @@ export function StatusDistributionCard({
   data,
   className = "",
 }: StatusDistributionCardProps) {
-  const statusLabels = {
-    active: "Activos",
-    inactive: "Inactivos",
-    deceased: "Fallecidos",
-  };
-
-  const statusColors = {
-    active: "bg-green-100 text-green-800",
-    inactive: "bg-yellow-100 text-yellow-800",
-    deceased: "bg-gray-100 text-gray-800",
-  };
-
   return (
     <div
       className={`rounded-xl bg-white p-6 shadow-sm border border-gray-100 ${className}`}
@@ -221,7 +243,57 @@ export function DemographicCard({
     </div>
   );
 }
-
+export function GenderDistributionCard({
+  data,
+  className = "",
+}: GenderDistributionCardProps) {
+  return (
+    <div
+      className={`rounded-xl bg-white p-6 shadow-sm border border-gray-100 ${className}`}
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-indigo-50 rounded-lg">
+          <UsersIcon className="h-6 w-6 text-indigo-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-gray-900">
+            Distribución por Género
+          </h3>
+          <p className="text-xs text-gray-500">{data.total} pacientes</p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {(["male", "female", "other", "unknown"] as const).map((gender) => {
+          const isDominant = gender === data.dominant;
+          return (
+            <div key={gender} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${genderColors[gender]}`}
+                >
+                  {genderLabels[gender]}
+                </span>
+                {isDominant && (
+                  <span className="text-xs text-indigo-600 font-medium">
+                    Mayoría
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-bold text-gray-900">
+                  {data.counts[gender]}
+                </span>
+                <span className="text-sm text-gray-500 ml-1">
+                  ({data.percentages[gender]}%)
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 // 4. TARJETA DE TENDENCIAS TEMPORALES
 type TemporalTrendsCardProps = BaseCardProps & {
   data: {
@@ -316,13 +388,12 @@ export function TemporalTrendsCard({
     </div>
   );
 }
-
 // COMPONENTE WRAPPER PRINCIPAL
 type EnhancedStatsGridProps = {
   statusData: StatusDistributionCardProps["data"];
   geographicData: GeographicCardProps["data"];
   demographicData: DemographicCardProps["data"];
-  temporalData: TemporalTrendsCardProps["data"];
+  genderData: GenderDistributionCardProps["data"];
   className?: string;
 };
 
@@ -330,7 +401,7 @@ export function EnhancedStatsGrid({
   statusData,
   geographicData,
   demographicData,
-  temporalData,
+  genderData,
   className = "",
 }: EnhancedStatsGridProps) {
   return (
@@ -340,11 +411,10 @@ export function EnhancedStatsGrid({
       <StatusDistributionCard data={statusData} />
       <GeographicCard data={geographicData} />
       <DemographicCard data={demographicData} />
-      <TemporalTrendsCard data={temporalData} />
+      <GenderDistributionCard data={genderData} />
     </div>
   );
 }
-
 /**
  * CARACTERÍSTICAS DE ESTOS COMPONENTES:
  *
@@ -354,5 +424,4 @@ export function EnhancedStatsGrid({
  * 4. **Responsive**: Adaptable a diferentes tamaños de pantalla
  * 5. **Tipado Fuerte**: Props específicos para cada tipo de datos
  * 6. **Accesibilidad**: Colores con buen contraste y estructura semántica
- * 7. **Visual Hierarchy**: Uso de tamaños de fuente y colores para priorizar información
- */
+ * 7. **Visual Hierarchy**: Uso de tamaños de fuente y colores*/

@@ -44,7 +44,17 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
               {patient.name}
             </h1>
             <p className="text-blue-100 text-sm">
-              {formatAge(patient.date_of_birth)}
+              {formatAge(patient.date_of_birth)} ·{" "}
+              {
+                (
+                  {
+                    male: "Masculino",
+                    female: "Femenino",
+                    other: "Otro",
+                    unknown: "Sin especificar",
+                  } as const
+                )[patient.gender]
+              }
             </p>
             <p className="text-blue-100 text-xs">
               {formatDateToLocal(patient.date_of_birth)}
@@ -67,6 +77,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                 {patient.address ?? "Sin dirección"}
               </dd>
             </div>
+
             <div className="flex items-center gap-2">
               <dt className="sr-only">Teléfono</dt>
               <dd>

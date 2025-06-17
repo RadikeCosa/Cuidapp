@@ -1,5 +1,5 @@
 // app/(dashboard)/patients/loading.tsx - LOADING PAGE DE NEXT.JS
-import { StatsGridSkeleton } from "@/components/patients/suspense-wrappers";
+import { StatsGridSkeleton } from "@/components/ui/skeletons/skeletons";
 import { Skeleton } from "@/components/ui/skeletons/skeleton";
 
 /**

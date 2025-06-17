@@ -1,112 +1,58 @@
+// lib/schema/patient.schema.ts
 import { z } from "zod";
 
 // Enum reutilizable para status
 export const PatientStatusEnum = z.enum(["active", "inactive", "deceased"]);
 
+// Enum para género
+export const PatientGenderEnum = z.enum(["male", "female", "other", "unknown"]);
+
 // Tipo TypeScript inferido desde el enum Zod
 export type PatientStatus = z.infer<typeof PatientStatusEnum>;
+export type PatientGender = z.infer<typeof PatientGenderEnum>;
 
-// Esquema principal del paciente
-const PatientSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  dni: z.string(),
-  date_of_birth: z.string(),
+// Esquema principal del paciente - SOLO estructura y validaciones
+export const PatientSchema = z.object({
+  id: z.string().min(1, "ID es requerido"),
+  name: z.string().min(1, "Nombre es requerido").trim(),
+  dni: z
+    .string()
+    .min(7, "DNI debe tener al menos 7 dígitos")
+    .max(8, "DNI debe tener máximo 8 dígitos")
+    .regex(/^\d+$/, "DNI debe contener solo números"),
+  date_of_birth: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha debe estar en formato YYYY-MM-DD")
+    .refine((date) => !isNaN(Date.parse(date)), "Fecha inválida"),
+  gender: PatientGenderEnum,
   // Campos de contacto existentes
-  address: z.string().optional(),
-  city: z.string().min(1, "La ciudad es requerida"), // Campo requerido para análisis geográfico
-  neighborhood: z.string().optional(), // Barrio para análisis granular
-
-  phone: z.string().optional(),
+  address: z.string().trim().optional(),
+  city: z.string().min(1, "La ciudad es requerida").trim(),
+  neighborhood: z.string().trim().optional(),
+  phone: z
+    .string()
+    .regex(/^[\d\s\-\+\(\)]+$/, "Teléfono contiene caracteres inválidos")
+    .optional(),
   // Nuevos campos de contacto
-  email: z.string().email().optional(), // Validación de formato email
+  email: z.string().email("Email inválido").optional(),
   emergency_contact: z
     .object({
-      name: z.string().optional(),
-      phone: z.string().optional(),
+      name: z.string().trim().optional(),
+      phone: z
+        .string()
+        .regex(/^[\d\s\-\+\(\)]+$/, "Teléfono contiene caracteres inválidos")
+        .optional(),
     })
     .optional(),
-  contact_notes: z.string().optional(),
+  contact_notes: z.string().trim().optional(),
   // Campos existentes
-  createdAt: z.string().optional(),
+  createdAt: z
+    .string()
+    .datetime("Fecha de creación debe ser un timestamp ISO válido")
+    .optional(),
   status: PatientStatusEnum.optional().default("active"),
-  image_url: z.string().optional(),
+  image_url: z.string().url("URL de imagen inválida").optional(),
 });
 
+// Tipo TypeScript inferido desde el schema
 export type Patient = z.infer<typeof PatientSchema>;
-
-export function validatePatient(data: unknown): Patient {
-  return PatientSchema.parse(data);
-}
-
-export function validatePatients(data: unknown[]): Patient[] {
-  return data.map(validatePatient);
-}
-// Utilidades para análisis de datos
-export const PatientAnalytics = {
-  /**
-   * Calcula la edad a partir de fecha de nacimiento
-   */
-  calculateAge: (dateOfBirth: string): number => {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-
-    return age;
-  },
-
-  /**
-   * Verifica si un paciente fue creado en el mes actual
-   */
-  isCreatedThisMonth: (createdAt: string): boolean => {
-    const createdDate = new Date(createdAt);
-    const now = new Date();
-    return (
-      createdDate.getMonth() === now.getMonth() &&
-      createdDate.getFullYear() === now.getFullYear()
-    );
-  },
-
-  /**
-   * Agrupa pacientes por ciudad
-   */
-  groupByCity: (patients: Patient[]): Record<string, number> => {
-    return patients.reduce((acc, patient) => {
-      const city = patient.city || "Sin especificar";
-      acc[city] = (acc[city] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-  },
-
-  /**
-   * Calcula estadísticas de edad
-   */
-  getAgeStats: (patients: Patient[]) => {
-    const ages = patients.map((p) =>
-      PatientAnalytics.calculateAge(p.date_of_birth)
-    );
-    const validAges = ages.filter((age) => !isNaN(age) && age >= 0);
-
-    if (validAges.length === 0) {
-      return { average: 0, youngest: 0, oldest: 0 };
-    }
-
-    return {
-      average: Math.round(
-        validAges.reduce((sum, age) => sum + age, 0) / validAges.length
-      ),
-      youngest: Math.min(...validAges),
-      oldest: Math.max(...validAges),
-    };
-  },
-};
-
-export { PatientSchema };
