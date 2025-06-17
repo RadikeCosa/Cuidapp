@@ -6,6 +6,21 @@ import {
 import { supabase } from "@/lib/supabase";
 import { calculatePatientStats } from "./patient-stats";
 
+// Puedes mover estas interfaces a un archivo de tipos si ya existen
+interface EmergencyContact {
+  name: string;
+  phone: string;
+}
+
+interface ContactNote {
+  note: string;
+}
+
+interface SupabaseError {
+  message: string;
+  code?: string;
+}
+
 /**
  * Servicio de pacientes - Acceso a datos desde Supabase
  */
@@ -13,30 +28,32 @@ export class PatientsService {
   /**
    * Obtiene todos los pacientes desde Supabase
    */
-  private static handleSupabaseError(error: any) {
+  private static handleSupabaseError(error: SupabaseError | null) {
     if (error) throw new Error(error.message);
   }
+
   private static buildPatientWithRelations(
-    patient: any,
-    emergency_contact: any,
-    contact_notes_data: any
+    patient: Patient,
+    emergency_contact: EmergencyContact | null,
+    contact_notes_data: ContactNote[] | null
   ) {
     return {
       ...patient,
       emergency_contact: emergency_contact || null,
       contact_notes:
         contact_notes_data && contact_notes_data.length > 0
-          ? contact_notes_data.map((n: any) => n.note).join(" | ")
+          ? contact_notes_data.map((n) => n.note).join(" | ")
           : undefined,
     };
   }
+
   static async getAllPatients(): Promise<Patient[]> {
     const { data, error } = await supabase
       .from("patients")
       .select("*")
       .order("created_at", { ascending: false });
 
-    this.handleSupabaseError(error);
+    this.handleSupabaseError(error as SupabaseError | null);
     return validatePatients(data || []);
   }
 
@@ -72,9 +89,9 @@ export class PatientsService {
 
     // 4. Armar el objeto paciente extendido
     const patientWithRelations = this.buildPatientWithRelations(
-      patient,
-      emergency_contact,
-      contact_notes_data
+      patient as Patient,
+      emergency_contact as EmergencyContact | null,
+      contact_notes_data as ContactNote[] | null
     );
 
     // 5. Validar con Zod
@@ -93,7 +110,7 @@ export class PatientsService {
       .from("patients")
       .select("*");
 
-    this.handleSupabaseError(error);
+    this.handleSupabaseError(error as SupabaseError | null);
     return calculatePatientStats(validatePatients(patients || []));
   }
 }

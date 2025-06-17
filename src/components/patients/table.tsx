@@ -1,8 +1,5 @@
 // src/components/patients/table.tsx
-import Image from "next/image";
-import Link from "next/link";
-import PatientStatus from "@/components/patients/status";
-import { formatAge } from "@/lib/utils/dateUtils";
+
 import type { Patient } from "@/lib/schema/patient.schema";
 import EmptyPatientsMessage from "./empty-patients-message";
 import PatientTableRow from "./patient-table-row";
