@@ -22,12 +22,11 @@ export function calculatePatientStats(patients: Patient[]) {
         dominantAgeGroup: "N/A",
         totalWithAgeData: 0,
       },
-      temporalTrends: {
-        thisMonth: 0,
-        lastMonth: 0,
-        trend: "stable" as "stable",
-        changePercentage: 0,
-        averageMonthlyGrowth: 0,
+      genderDistribution: {
+        counts: { male: 0, female: 0, other: 0, unknown: 0 },
+        percentages: { male: 0, female: 0, other: 0, unknown: 0 },
+        total: 0,
+        dominant: "unknown" as "unknown",
       },
     };
   }
@@ -40,6 +39,15 @@ export function calculatePatientStats(patients: Patient[]) {
     inactive: 0,
     deceased: 0,
   };
+  // Gender
+  const validGenders = ["male", "female", "other", "unknown"] as const;
+  type GenderKey = (typeof validGenders)[number];
+  const genderCounts: Record<GenderKey, number> = {
+    male: 0,
+    female: 0,
+    other: 0,
+    unknown: 0,
+  };
   // Cities
   const cities = {} as Record<string, number>;
   // Age
@@ -48,16 +56,21 @@ export function calculatePatientStats(patients: Patient[]) {
     oldest = -Infinity,
     withAge = 0;
   const today = new Date();
-  // Temporal
-  let thisMonth = 0,
-    lastMonth = 0;
-  const months: Record<string, number> = {};
 
   for (const p of patients) {
     // Status
     if (validStatuses.includes(p.status as StatusKey)) {
       statusCounts[p.status as StatusKey]++;
     }
+    // Gender
+    // Gender
+    let gender: GenderKey = "unknown";
+    const genderValue = (p.gender || "").toString().toLowerCase();
+    if (["male", "m", "masculino"].includes(genderValue)) gender = "male";
+    else if (["female", "f", "femenino"].includes(genderValue))
+      gender = "female";
+    else if (["other", "otro"].includes(genderValue)) gender = "other";
+    genderCounts[gender]++;
     // City
     if (p.city) cities[p.city] = (cities[p.city] || 0) + 1;
     // Age
@@ -75,22 +88,6 @@ export function calculatePatientStats(patients: Patient[]) {
       oldest = Math.max(oldest, age);
       withAge++;
     }
-    // Temporal trends
-    if (p.createdAt) {
-      const created = new Date(p.createdAt);
-      const key = `${created.getFullYear()}-${created.getMonth() + 1}`;
-      months[key] = (months[key] || 0) + 1;
-      if (
-        created.getFullYear() === today.getFullYear() &&
-        created.getMonth() === today.getMonth()
-      )
-        thisMonth++;
-      if (
-        created.getFullYear() === today.getFullYear() &&
-        created.getMonth() === today.getMonth() - 1
-      )
-        lastMonth++;
-    }
   }
 
   const total = patients.length;
@@ -107,19 +104,25 @@ export function calculatePatientStats(patients: Patient[]) {
   if (average < 40) dominantAgeGroup = "0-39";
   else if (average < 65) dominantAgeGroup = "40-64";
   else if (average >= 65) dominantAgeGroup = "65+";
-  // Temporal trends
-  let trend: "up" | "down" | "stable" = "stable";
-  let changePercentage = 0,
-    averageMonthlyGrowth = 0;
-  if (lastMonth > 0) {
-    changePercentage = Math.round(((thisMonth - lastMonth) / lastMonth) * 100);
-    trend =
-      thisMonth > lastMonth ? "up" : thisMonth < lastMonth ? "down" : "stable";
-  }
-  if (Object.keys(months).length > 1) {
-    const totalMonths = Object.keys(months).length;
-    averageMonthlyGrowth = Math.round(total / totalMonths);
-  }
+
+  // Gender stats
+  const genderTotal = Object.values(genderCounts).reduce((a, b) => a + b, 0);
+  const genderPercentages: Record<GenderKey, number> = {
+    male: genderTotal ? Math.round((genderCounts.male / genderTotal) * 100) : 0,
+    female: genderTotal
+      ? Math.round((genderCounts.female / genderTotal) * 100)
+      : 0,
+    other: genderTotal
+      ? Math.round((genderCounts.other / genderTotal) * 100)
+      : 0,
+    unknown: genderTotal
+      ? Math.round((genderCounts.unknown / genderTotal) * 100)
+      : 0,
+  };
+  const dominantGenderEntry = Object.entries(genderCounts).sort(
+    (a, b) => b[1] - a[1]
+  )[0];
+  const dominantGender = (dominantGenderEntry?.[0] as GenderKey) ?? "unknown";
 
   return {
     statusDistribution: {
@@ -146,12 +149,11 @@ export function calculatePatientStats(patients: Patient[]) {
       dominantAgeGroup,
       totalWithAgeData: withAge,
     },
-    temporalTrends: {
-      thisMonth,
-      lastMonth,
-      trend,
-      changePercentage,
-      averageMonthlyGrowth,
+    genderDistribution: {
+      counts: genderCounts,
+      percentages: genderPercentages,
+      total: genderTotal,
+      dominant: dominantGender,
     },
   };
 }

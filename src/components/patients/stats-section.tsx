@@ -20,7 +20,7 @@ export async function StatsSection() {
         statusData={stats.statusDistribution}
         geographicData={stats.geographicStats}
         demographicData={stats.demographicStats}
-        temporalData={stats.temporalTrends}
+        genderData={stats.genderDistribution}
       />
     </div>
   );
