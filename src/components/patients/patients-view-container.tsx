@@ -1,7 +1,7 @@
-// components/patients/patients-view-container.tsx - VERSIÓN OPTIMIZADA
+// components/patients/patients-view-container.tsx
 "use client";
 
-import { useState, useTransition, Suspense } from "react";
+import { useState, useTransition } from "react";
 import ViewToggle from "./view-toggle";
 import PatientsTable from "./table";
 import PatientsCompactCards from "./compact-cards";
