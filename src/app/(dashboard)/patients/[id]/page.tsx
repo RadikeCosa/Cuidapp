@@ -24,7 +24,7 @@ export default async function PatientDetailPage({
   const { id } = await params;
 
   // Data fetching en Server Component
-  const patient = await PatientsService.getPatientById(id);
+  const patient = await PatientsService.getPatientByIdFromSupabase(id);
 
   // Next.js maneja automáticamente el 404
   if (!patient) {

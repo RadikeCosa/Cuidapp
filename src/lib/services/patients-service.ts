@@ -60,19 +60,45 @@ export class PatientsService {
    * Obtiene un paciente por ID desde Supabase
    */
   static async getPatientByIdFromSupabase(id: string): Promise<Patient | null> {
-    const { data, error } = await supabase
+    // 1. Obtener paciente principal
+    const { data: patient, error } = await supabase
       .from("patients")
       .select("*")
       .eq("id", id)
       .single();
 
     if (error) {
-      // Si no existe, devolvé null (no tires error)
       if (error.code === "PGRST116") return null;
       throw new Error(error.message);
     }
+    if (!patient) return null;
+
+    // 2. Obtener contacto de emergencia (1:1)
+    const { data: emergency_contact } = await supabase
+      .from("emergency_contacts")
+      .select("name, phone")
+      .eq("patient_id", id)
+      .single();
+
+    // 3. Obtener notas de contacto (1:N)
+    const { data: contact_notes_data } = await supabase
+      .from("contact_notes")
+      .select("note")
+      .eq("patient_id", id);
+
+    // 4. Armar el objeto paciente extendido
+    const patientWithRelations = {
+      ...patient,
+      emergency_contact: emergency_contact || null,
+      contact_notes:
+        contact_notes_data && contact_notes_data.length > 0
+          ? contact_notes_data.map((n) => n.note).join(" | ")
+          : undefined,
+    };
+
+    // 5. Validar con Zod
     try {
-      return validatePatient(data);
+      return validatePatient(patientWithRelations);
     } catch {
       return null;
     }
