@@ -1,19 +1,17 @@
 // src/components/patients/infoCard.tsx
 import { formatAge, formatDateToLocal } from "@/lib/utils/dateUtils";
+import { formatGender } from "@/lib/utils/patient-utils";
 import PatientStatus from "./status";
 import type { Patient } from "@/lib/schema/patient.schema";
 import Image from "next/image";
+import PhoneIcon from "@/components/ui/phone-icon";
+import EmailIcon from "@/components/ui/email-icon";
+import InfoIcon from "@/components/ui/info-icon";
 
 interface PatientInfoCardProps {
   patient: Patient;
 }
 
-/**
- * ESTE ES UN SERVER COMPONENT MEJORADO v1.2.0
- * - Nuevos campos de contacto: email, emergency_contact, contact_notes
- * - Mantiene diseño limpio y escalable
- * - Preparado para Supabase y futuras integraciones
- */
 export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
   return (
     <section
@@ -45,16 +43,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
             </h1>
             <p className="text-blue-100 text-sm">
               {formatAge(patient.date_of_birth)} ·{" "}
-              {
-                (
-                  {
-                    male: "Masculino",
-                    female: "Femenino",
-                    other: "Otro",
-                    unknown: "Sin especificar",
-                  } as const
-                )[patient.gender]
-              }
+              {formatGender(patient.gender)}
             </p>
             <p className="text-blue-100 text-xs">
               {formatDateToLocal(patient.date_of_birth)}
@@ -78,7 +67,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline"
-                  title={[patient.address, patient.neighborhood, patient.city]
+                  title={[patient.address, patient.city]
                     .filter(Boolean)
                     .join(", ")}
                 >
@@ -101,20 +90,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                     href={`tel:${patient.phone}`}
                     className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
                   >
-                    <svg
-                      className="w-4 h-4 mr-1 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.52l.3 1.2a2 2 0 01-.45 1.95l-.7.7a16.06 16.06 0 006.36 6.36l.7-.7a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.82 23 1 16.18 1 8V7a2 2 0 012-2z"
-                      />
-                    </svg>
+                    <PhoneIcon />
                     {patient.phone}
                   </a>
                 ) : (
@@ -130,20 +106,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                     href={`mailto:${patient.email}`}
                     className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
                   >
-                    <svg
-                      className="w-4 h-4 mr-1 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
+                    <EmailIcon />
                     {patient.email}
                   </a>
                 ) : (
@@ -176,20 +139,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                       href={`tel:${patient.emergency_contact.phone}`}
                       className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
                     >
-                      <svg
-                        className="w-4 h-4 mr-1 text-blue-500"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.52l.3 1.2a2 2 0 01-.45 1.95l-.7.7a16.06 16.06 0 006.36 6.36l.7-.7a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.82 23 1 16.18 1 8V7a2 2 0 012-2z"
-                        />
-                      </svg>
+                      <PhoneIcon />
                       {patient.emergency_contact.phone}
                     </a>
                   ) : (
@@ -221,21 +171,13 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
           <div className="flex flex-col items-center gap-4 w-full">
             <div className="flex flex-wrap justify-center gap-3 w-full">
               <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
-                Registrar Evaluación
+                Agregar Contacto de Emergencia
               </button>
               <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
-                Registrar Visita
+                Agregar Nota de Contacto
               </button>
               <button className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm font-medium">
-                Coordinar Visita
-              </button>
-            </div>
-            <div className="flex flex-wrap justify-center gap-3 w-full">
-              <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium">
-                Ver
-              </button>
-              <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium">
-                Generar Reporte
+                Cambiar Status
               </button>
             </div>
           </div>
@@ -244,17 +186,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
         {/* Nota informativa */}
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start space-x-2">
-            <svg
-              className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <InfoIcon />
             <div className="flex-1">
               <p className="text-sm text-blue-800">
                 <strong>Nota:</strong> Esta información está sincronizada con el

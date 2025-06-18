@@ -6,7 +6,6 @@ import {
 import { supabase } from "@/lib/supabase";
 import { calculatePatientStats } from "./patient-stats";
 
-// Puedes mover estas interfaces a un archivo de tipos si ya existen
 interface EmergencyContact {
   name: string;
   phone: string;
@@ -21,17 +20,10 @@ interface SupabaseError {
   code?: string;
 }
 
-/**
- * Servicio de pacientes - Acceso a datos desde Supabase
- */
 export class PatientsService {
-  /**
-   * Obtiene todos los pacientes desde Supabase
-   */
   private static handleSupabaseError(error: SupabaseError | null) {
     if (error) throw new Error(error.message);
   }
-
   private static buildPatientWithRelations(
     patient: Patient,
     emergency_contact: EmergencyContact | null,
@@ -39,20 +31,20 @@ export class PatientsService {
   ) {
     return {
       ...patient,
-      emergency_contact: emergency_contact ?? undefined, // siempre presente
+      emergency_contact: emergency_contact ?? undefined, // Si no hay contacto de emergencia, lo dejamos como undefined
       contact_notes:
         contact_notes_data && contact_notes_data.length > 0
-          ? contact_notes_data.map((n) => n.note).join(" | ")
-          : undefined,
+          ? contact_notes_data.map((n) => n.note).join(" | ") // Unimos las notas en un string
+          : undefined, //
     };
   }
 
   static async getAllPatients(
     page: number = 1,
-    limit: number = 10 // puedes ajustar el default
+    limit: number = 5 // Paginación: página 1, 5 pacientes por página
   ): Promise<{ patients: Patient[]; total: number }> {
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
+    const from = (page - 1) * limit; // Calcular el índice de inicio
+    const to = from + limit - 1; // Calcular el índice de fin
 
     // Consulta paginada + cuenta total
     const { data, error, count } = await supabase
@@ -126,8 +118,6 @@ export class PatientsService {
     return calculatePatientStats(validatePatients(patients || []));
   }
   static async createPatient(patientData: Omit<Patient, "id">) {
-    // Aquí conectas con Supabase o tu backend
-    // Ejemplo Supabase:
     const { data, error } = await supabase
       .from("patients")
       .insert([patientData])

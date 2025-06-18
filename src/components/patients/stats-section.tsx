@@ -5,17 +5,7 @@ import { PatientsService } from "@/lib/services/patients-service";
 export async function StatsSection() {
   const stats = await PatientsService.getStats();
   return (
-    <div className="mb-8">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">
-          Análisis y Métricas
-        </h2>
-        <p className="text-gray-600 text-sm">
-          Insights clave sobre la distribución, demografía y tendencias de tus
-          pacientes
-        </p>
-      </div>
-
+    <div>
       <EnhancedStatsGrid
         statusData={stats.statusDistribution}
         geographicData={stats.geographicStats}
