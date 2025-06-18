@@ -1,4 +1,3 @@
-// components/patients/patients-view-container.tsx
 "use client";
 
 import { useState, useTransition } from "react";
@@ -12,6 +11,9 @@ type ViewType = "table" | "cards";
 
 interface PatientsViewContainerProps {
   patients: Patient[];
+  total: number;
+  currentPage: number;
+  limit: number;
 }
 
 // Componente que renderiza la vista actual con Suspense
@@ -30,6 +32,9 @@ function PatientsView({
 
 export default function PatientsViewContainer({
   patients,
+  total,
+  currentPage,
+  limit,
 }: PatientsViewContainerProps) {
   const [currentView, setCurrentView] = useState<ViewType>("table");
   const [isPending, startTransition] = useTransition();
@@ -41,6 +46,9 @@ export default function PatientsViewContainer({
       setCurrentView(view);
     });
   };
+
+  // Calcula el total de páginas
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="space-y-4">
@@ -70,6 +78,9 @@ export default function PatientsViewContainer({
       >
         <PatientsView patients={patients} view={currentView} />
       </div>
+
+      {/* Aquí irá el componente de paginación */}
+      {/* <Pagination currentPage={currentPage} totalPages={totalPages} /> */}
     </div>
   );
 }
