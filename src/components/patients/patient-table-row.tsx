@@ -1,4 +1,4 @@
-// src/components/patients/PatientTableRow.tsx
+// src/components/patients/patient-table-row.tsx
 import Image from "next/image";
 import Link from "next/link";
 import PatientStatus from "@/components/patients/status";
@@ -8,7 +8,6 @@ import type { Patient } from "@/lib/schema/patient.schema";
 interface PatientTableRowProps {
   patient: Patient;
   className?: string;
-  showGender?: boolean; // <--- agrega esto
 }
 
 export default function PatientTableRow({
@@ -17,10 +16,7 @@ export default function PatientTableRow({
 }: PatientTableRowProps) {
   return (
     <tr
-      className={`
-        hover:bg-blue-50 transition-all duration-200 hover:shadow-sm
-        ${className}
-      `}
+      className={`hover:bg-blue-50 transition-all duration-200 hover:shadow-sm ${className}`}
     >
       <td className="px-3 py-2">
         <Link

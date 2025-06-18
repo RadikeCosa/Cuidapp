@@ -7,7 +7,11 @@ import {
   PatientsListSkeleton,
 } from "@/components/ui/skeletons/skeletons";
 
-export default function PatientsPage() {
+export default function PatientsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ page?: string }>;
+}) {
   return (
     <main className="space-y-8 p-6 bg-gray-50 min-h-screen">
       <section aria-label="Estadísticas de pacientes">
@@ -18,7 +22,7 @@ export default function PatientsPage() {
 
       <section aria-label="Lista de pacientes">
         <Suspense fallback={<PatientsListSkeleton />}>
-          <PatientsSection />
+          <PatientsSection searchParams={searchParams} />
         </Suspense>
       </section>
     </main>

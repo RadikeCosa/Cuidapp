@@ -1,5 +1,4 @@
 // src/components/patients/table.tsx
-
 import type { Patient } from "@/lib/schema/patient.schema";
 import EmptyPatientsMessage from "./empty-patients-message";
 import PatientTableRow from "./patient-table-row";
@@ -8,13 +7,6 @@ interface PatientsTableProps {
   patients: Patient[];
 }
 
-/**
- * ESTE ES UN SERVER COMPONENT
- * - Solo renderiza datos, sin interactividad
- * - Se ejecuta en el servidor
- * - Recibe datos como props
- * - Mejor performance y SEO
- */
 export default function PatientsTable({ patients }: PatientsTableProps) {
   if (patients.length === 0) {
     return <EmptyPatientsMessage />;
@@ -43,7 +35,6 @@ export default function PatientsTable({ patients }: PatientsTableProps) {
               key={patient.id}
               patient={patient}
               className={index % 2 === 0 ? "bg-white" : "bg-gray-50/30"}
-              showGender={true} // <--- agrega esto
             />
           ))}
         </tbody>

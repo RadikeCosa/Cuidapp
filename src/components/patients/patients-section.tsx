@@ -1,23 +1,46 @@
-// components/patients/patients-section.tsx
-import PatientsViewContainer from "@/components/patients/patients-view-container";
+// src/components/patients/patients-section.tsx
 import { PatientsService } from "@/lib/services/patients-service";
+import PatientsTable from "./table";
+import PatientsCount from "./patient-count";
+import Pagination from "./pagination";
 
 interface PatientsSectionProps {
-  searchParams?: { page?: string };
+  searchParams?: Promise<{ page?: string }>;
 }
 
 export async function PatientsSection({ searchParams }: PatientsSectionProps) {
-  const page = Number(searchParams?.page) || 1;
-  const limit = 12;
+  // Await searchParams antes de acceder a sus propiedades
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+  const limit = 6;
 
-  const { patients, total } = await PatientsService.getAllPatients(page, limit);
+  const { patients, total } = await PatientsService.getAllPatients(
+    currentPage,
+    limit
+  );
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
-    <PatientsViewContainer
-      patients={patients}
-      total={total}
-      currentPage={page}
-      limit={limit}
-    />
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">
+          Lista de Pacientes
+        </h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Gestiona y visualiza la información de tus pacientes
+        </p>
+      </div>
+
+      {/* Contador */}
+      <PatientsCount count={patients.length} />
+
+      {/* Tabla */}
+      <PatientsTable patients={patients} />
+
+      {/* Paginación */}
+      <Pagination currentPage={currentPage} totalPages={totalPages} />
+    </div>
   );
 }

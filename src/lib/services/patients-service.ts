@@ -39,7 +39,7 @@ export class PatientsService {
   ) {
     return {
       ...patient,
-      emergency_contact: emergency_contact || null,
+      emergency_contact: emergency_contact ?? undefined, // siempre presente
       contact_notes:
         contact_notes_data && contact_notes_data.length > 0
           ? contact_notes_data.map((n) => n.note).join(" | ")
@@ -49,7 +49,7 @@ export class PatientsService {
 
   static async getAllPatients(
     page: number = 1,
-    limit: number = 12 // puedes ajustar el default
+    limit: number = 10 // puedes ajustar el default
   ): Promise<{ patients: Patient[]; total: number }> {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
@@ -124,5 +124,17 @@ export class PatientsService {
 
     this.handleSupabaseError(error as SupabaseError | null);
     return calculatePatientStats(validatePatients(patients || []));
+  }
+  static async createPatient(patientData: Omit<Patient, "id">) {
+    // Aquí conectas con Supabase o tu backend
+    // Ejemplo Supabase:
+    const { data, error } = await supabase
+      .from("patients")
+      .insert([patientData])
+      .select()
+      .single();
+
+    if (error) return { error };
+    return { data };
   }
 }
