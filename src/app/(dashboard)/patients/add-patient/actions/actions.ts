@@ -20,7 +20,7 @@ export async function addPatientAction(
 
   try {
     const validated = PatientSchema.parse({ ...data, id: "temp-id" });
-    const { id, ...patientData } = validated;
+    const { id: _id, ...patientData } = validated; // Prefijo con _ para indicar que no se usa
     const result = await PatientsService.createPatient(patientData);
 
     if ("error" in result && result.error) {
@@ -35,11 +35,19 @@ export async function addPatientAction(
     }
 
     return { success: true };
-  } catch (err: any) {
-    if (err.name === "ZodError") {
+  } catch (err: unknown) {
+    // Cambié any por unknown
+    // Type guard para verificar si es un error de Zod
+    if (
+      err &&
+      typeof err === "object" &&
+      "name" in err &&
+      err.name === "ZodError"
+    ) {
+      const zodError = err as { errors?: Array<{ message?: string }> };
       return {
         success: false,
-        error: err.errors?.[0]?.message || "Datos inválidos",
+        error: zodError.errors?.[0]?.message || "Datos inválidos",
       };
     }
     return { success: false, error: "Ocurrió un error desconocido" };
