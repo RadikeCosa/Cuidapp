@@ -20,7 +20,8 @@ export async function addPatientAction(
 
   try {
     const validated = PatientSchema.parse({ ...data, id: "temp-id" });
-    const { id: _id, ...patientData } = validated; // Prefijo con _ para indicar que no se usa
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...patientData } = validated;
     const result = await PatientsService.createPatient(patientData);
 
     if ("error" in result && result.error) {
