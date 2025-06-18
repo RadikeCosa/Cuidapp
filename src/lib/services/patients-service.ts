@@ -47,14 +47,26 @@ export class PatientsService {
     };
   }
 
-  static async getAllPatients(): Promise<Patient[]> {
-    const { data, error } = await supabase
+  static async getAllPatients(
+    page: number = 1,
+    limit: number = 12 // puedes ajustar el default
+  ): Promise<{ patients: Patient[]; total: number }> {
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    // Consulta paginada + cuenta total
+    const { data, error, count } = await supabase
       .from("patients")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
     this.handleSupabaseError(error as SupabaseError | null);
-    return validatePatients(data || []);
+
+    return {
+      patients: validatePatients(data || []),
+      total: count ?? 0,
+    };
   }
 
   /**
