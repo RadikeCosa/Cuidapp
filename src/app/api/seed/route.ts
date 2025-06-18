@@ -7,27 +7,27 @@ export async function POST() {
     .from("patients")
     .insert([
       {
-        name: "María González",
-        dni: "12345678",
-        date_of_birth: "1945-03-15",
-        gender: "female", // <--- NUEVO
-        address: "Av. San Martín 1234",
-        city: "Neuquén",
-        neighborhood: "Centro",
-        phone: "+54 299 123-4567",
-        email: "maria.gonzalez@email.com",
+        name: "Lucía Fernández",
+        dni: "34567890",
+        date_of_birth: "1948-11-05",
+        gender: "female",
+        address: "Calle Mitre 890",
+        city: "Plottier",
+        neighborhood: "Los Álamos",
+        phone: "+54 299 345-6789",
+        email: "lucia.fernandez@email.com",
         status: "active",
       },
       {
-        name: "Carlos Rodríguez",
-        dni: "23456789",
-        date_of_birth: "1952-07-22",
-        gender: "male", // <--- NUEVO
-        address: "Calle Belgrano 567",
-        city: "Cipolletti",
-        neighborhood: "Villa Obrera",
-        phone: "+54 299 234-5678",
-        email: "carlos.rodriguez@email.com",
+        name: "Jorge Pérez",
+        dni: "45678901",
+        date_of_birth: "1950-02-18",
+        gender: "male",
+        address: "Av. Olascoaga 234",
+        city: "Neuquén",
+        neighborhood: "Santa Genoveva",
+        phone: "+54 299 456-7890",
+        email: "jorge.perez@email.com",
         status: "active",
       },
     ])
@@ -41,12 +41,12 @@ export async function POST() {
   const emergencyContactsToInsert = [
     {
       patient_id: patients?.[0]?.id,
-      name: "Juan González",
-      phone: "+54 299 765-4321",
+      name: "Martín Fernández",
+      phone: "+54 299 987-6543",
     },
     {
       patient_id: patients?.[1]?.id,
-      name: "Ana Rodríguez",
+      name: "Sofía Pérez",
       phone: "+54 299 876-5432",
     },
   ];
@@ -67,11 +67,11 @@ export async function POST() {
   const contactNotesToInsert = [
     {
       patient_id: patients?.[0]?.id,
-      note: "Prefiere llamadas por la mañana",
+      note: "Hija vive cerca y puede asistir rápidamente.",
     },
     {
       patient_id: patients?.[1]?.id,
-      note: "Familiar disponible solo fines de semana",
+      note: "Prefiere ser contactado por WhatsApp.",
     },
   ];
 

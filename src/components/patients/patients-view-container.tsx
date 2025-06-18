@@ -6,6 +6,7 @@ import PatientsTable from "./table";
 import PatientsCompactCards from "./compact-cards";
 import type { Patient } from "@/lib/schema/patient.schema";
 import PatientsCount from "./patient-count";
+import Pagination from "./pagination";
 
 type ViewType = "table" | "cards";
 
@@ -79,8 +80,7 @@ export default function PatientsViewContainer({
         <PatientsView patients={patients} view={currentView} />
       </div>
 
-      {/* Aquí irá el componente de paginación */}
-      {/* <Pagination currentPage={currentPage} totalPages={totalPages} /> */}
+      <Pagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 }
