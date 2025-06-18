@@ -70,11 +70,26 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <dt className="sr-only">Dirección</dt>
-              <dd
-                className="text-sm text-gray-900 truncate"
-                title={patient.address}
-              >
-                {patient.address ?? "Sin dirección"}
+              <dd className="text-sm text-gray-900 truncate">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    [patient.address, patient.city].filter(Boolean).join(", ")
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                  title={[patient.address, patient.neighborhood, patient.city]
+                    .filter(Boolean)
+                    .join(", ")}
+                >
+                  {[
+                    patient.address ?? "Sin dirección",
+                    patient.neighborhood,
+                    patient.city,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </a>
               </dd>
             </div>
 
