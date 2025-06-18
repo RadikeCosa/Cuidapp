@@ -11,7 +11,7 @@ const patientNavLinks = [
     icon: <UsersIcon className="w-6 h-6" />,
   },
   {
-    href: "/add-patient",
+    href: "/patients/add-patient",
     label: "Add Patient",
     icon: <UserPlusIcon className="w-6 h-6" />,
   },
