@@ -7,6 +7,7 @@ import Image from "next/image";
 import PhoneIcon from "@/components/ui/phone-icon";
 import EmailIcon from "@/components/ui/email-icon";
 import InfoIcon from "@/components/ui/info-icon";
+import { PatientStatusChanger } from "./patient-status-changer";
 
 interface PatientInfoCardProps {
   patient: Patient;
@@ -176,9 +177,12 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
               <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
                 Agregar Nota de Contacto
               </button>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm font-medium">
-                Cambiar Status
-              </button>
+              <div className="px-4 py-2">
+                <PatientStatusChanger
+                  id={patient.id}
+                  initialStatus={patient.status ?? "active"}
+                />{" "}
+              </div>
             </div>
           </div>
         </div>

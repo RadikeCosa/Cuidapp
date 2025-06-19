@@ -2,7 +2,7 @@
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { addPatientAction } from "@/app/(dashboard)/patients/add-patient/actions/actions";
+import { addPatientAction } from "@/app/(dashboard)/patients/actions/add-patient-actions";
 
 export function AddPatientForm() {
   const router = useRouter();
