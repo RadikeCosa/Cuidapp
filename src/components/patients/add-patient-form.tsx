@@ -1,16 +1,14 @@
 "use client";
 import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { addPatientAction } from "@/app/(dashboard)/patients/add-patient/actions/actions";
 
 export function AddPatientForm() {
   const router = useRouter();
-  const [state, formAction] = useActionState(addPatientAction, {
+  const [state, formAction, isPending] = useActionState(addPatientAction, {
     success: false,
   });
-  const { pending } = useFormStatus();
 
   useEffect(() => {
     if (state.success && state.id) {
@@ -162,9 +160,9 @@ export function AddPatientForm() {
         <button
           type="submit"
           className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition flex items-center justify-center"
-          disabled={pending}
+          disabled={isPending}
         >
-          {pending ? (
+          {isPending ? (
             <span className="flex items-center gap-2">
               <svg
                 className="animate-spin h-5 w-5 text-white"
