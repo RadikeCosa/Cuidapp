@@ -4,10 +4,14 @@ import { formatGender } from "@/lib/utils/patient-utils";
 import PatientStatus from "./status";
 import type { Patient } from "@/lib/schema/patient.schema";
 import Image from "next/image";
-import PhoneIcon from "@/components/ui/phone-icon";
-import EmailIcon from "@/components/ui/email-icon";
-import InfoIcon from "@/components/ui/info-icon";
+
 import { PatientStatusChanger } from "./patient-status-changer";
+import {
+  MapPinIcon,
+  PhoneIcon,
+  AtSymbolIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 
 interface PatientInfoCardProps {
   patient: Patient;
@@ -72,6 +76,8 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                     .filter(Boolean)
                     .join(", ")}
                 >
+                  {" "}
+                  <MapPinIcon className="inline-block w-4 h-4 mr-1" />
                   {[
                     patient.address ?? "Sin dirección",
                     patient.neighborhood,
@@ -91,7 +97,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                     href={`tel:${patient.phone}`}
                     className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
                   >
-                    <PhoneIcon />
+                    <PhoneIcon className="inline-block w-4 h-4 mr-1" />
                     {patient.phone}
                   </a>
                 ) : (
@@ -107,7 +113,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
                     href={`mailto:${patient.email}`}
                     className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
                   >
-                    <EmailIcon />
+                    <AtSymbolIcon className="inline-block w-4 h-4 mr-1" />
                     {patient.email}
                   </a>
                 ) : (
@@ -190,7 +196,7 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
         {/* Nota informativa */}
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start space-x-2">
-            <InfoIcon />
+            <InformationCircleIcon className="inline-block w-4 h-4 mr-1" />
             <div className="flex-1">
               <p className="text-sm text-blue-800">
                 <strong>Nota:</strong> Esta información está sincronizada con el
@@ -203,28 +209,3 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
     </section>
   );
 }
-
-/**
- * MEJORAS IMPLEMENTADAS v1.2.0:
- *
- * ✅ NUEVOS CAMPOS DE CONTACTO:
- * - Email con validación de formato y enlace mailto:
- * - Contacto de emergencia con nombre y teléfono
- * - Notas de contacto para información adicional
- *
- * ✅ MEJORAS DE UX:
- * - Secciones claras para contacto de emergencia y notas
- * - Manejo consistente de campos opcionales
- * - Diseño escalable con Tailwind
- *
- * ✅ PREPARADO PARA SUPABASE:
- * - Nuevos campos mapeables directamente
- * - Validación robusta con Zod
- * - Estructura lista para edición inline y mapas
- *
- * PREPARADO PARA:
- * - Validación avanzada de formatos (teléfono, email)
- * - Integración con mapas para direcciones
- * - Edición inline de campos
- * - Soporte para múltiples contactos de emergencia
- */

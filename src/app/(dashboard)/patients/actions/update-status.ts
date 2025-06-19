@@ -4,11 +4,11 @@ import { supabase } from "@/lib/supabase";
 
 export async function updatePatientStatus(
   id: string,
-  NewStatus: PatientStatus
+  newStatus: PatientStatus
 ) {
   const { error } = await supabase
     .from("patients")
-    .update({ status: NewStatus })
+    .update({ status: newStatus })
     .eq("id", id);
 
   if (error) {

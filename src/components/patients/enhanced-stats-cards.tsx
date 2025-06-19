@@ -415,13 +415,3 @@ export function EnhancedStatsGrid({
     </div>
   );
 }
-/**
- * CARACTERÍSTICAS DE ESTOS COMPONENTES:
- *
- * 1. **Diseño Moderno**: Cards con bordes sutiles y sombras suaves
- * 2. **Iconografía Consistente**: Heroicons con colores temáticos
- * 3. **Información Densa**: Múltiples métricas por tarjeta
- * 4. **Responsive**: Adaptable a diferentes tamaños de pantalla
- * 5. **Tipado Fuerte**: Props específicos para cada tipo de datos
- * 6. **Accesibilidad**: Colores con buen contraste y estructura semántica
- * 7. **Visual Hierarchy**: Uso de tamaños de fuente y colores*/
