@@ -4,7 +4,6 @@ import { formatGender } from "@/lib/utils/patient-utils";
 import PatientStatus from "./status";
 import type { Patient } from "@/lib/schema/patient.schema";
 import Image from "next/image";
-
 import { PatientStatusChanger } from "./patient-status-changer";
 import {
   MapPinIcon,
@@ -123,88 +122,82 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
             </div>
           </div>
 
-          {/* Información de contacto de emergencia */}
-          {patient.emergency_contact && (
-            <div className="space-y-2 border-t border-gray-200 pt-4">
-              <h3 className="text-sm font-medium text-gray-900">
-                Contacto de Emergencia
-              </h3>
-              <div className="flex items-center gap-2">
-                <dt className="sr-only">Nombre de contacto de emergencia</dt>
-                <dd
-                  className="text-sm text-gray-900 truncate"
-                  title={patient.emergency_contact.name}
-                >
-                  {patient.emergency_contact.name ?? "Sin nombre"}
-                </dd>
-              </div>
-              <div className="flex items-center gap-2">
-                <dt className="sr-only">Teléfono de emergencia</dt>
-                <dd>
-                  {patient.emergency_contact.phone ? (
-                    <a
-                      href={`tel:${patient.emergency_contact.phone}`}
-                      className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
-                    >
-                      <PhoneIcon />
-                      {patient.emergency_contact.phone}
-                    </a>
-                  ) : (
-                    <span className="text-gray-400 text-sm">Sin teléfono</span>
-                  )}
-                </dd>
-              </div>
-            </div>
-          )}
+          <div className="space-y-2 border-t border-gray-200 pt-4">
+            <h3 className="text-sm font-medium text-gray-900">
+              Contacto de Emergencia
+            </h3>
+            {patient.emergency_contact ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Nombre de contacto de emergencia</dt>
+                  <dd
+                    className="text-sm text-gray-900 truncate"
+                    title={patient.emergency_contact.name}
+                  >
+                    {patient.emergency_contact.name ?? "Sin nombre"}
+                  </dd>
+                </div>
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Teléfono de emergencia</dt>
+                  <dd>
+                    {patient.emergency_contact.phone ? (
+                      <a
+                        href={`tel:${patient.emergency_contact.phone}`}
+                        className="inline-flex items-center text-blue-700 hover:underline text-sm font-mono"
+                      >
+                        <PhoneIcon className="inline-block w-4 h-4 mr-1" />
+                        {patient.emergency_contact.phone}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 text-sm">
+                        Sin teléfono
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Nombre de contacto de emergencia</dt>
+                  <dd className="text-sm text-gray-400 italic">
+                    Sin nombre registrado
+                  </dd>
+                </div>
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Teléfono de emergencia</dt>
+                  <dd>
+                    <span className="inline-flex items-center text-gray-400 text-sm">
+                      <PhoneIcon className="inline-block w-4 h-4 mr-1" />
+                      Sin teléfono registrado
+                    </span>
+                  </dd>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Notas de contacto */}
-          {patient.contact_notes && (
-            <div className="space-y-2 border-t border-gray-200 pt-4">
-              <h3 className="text-sm font-medium text-gray-900">
-                Notas de Contacto
-              </h3>
+          <div className="space-y-2 border-t border-gray-200 pt-4">
+            <h3 className="text-sm font-medium text-gray-900">
+              Notas de Contacto
+            </h3>
+            {patient.contact_notes ? (
               <dd
                 className="text-sm text-gray-900 truncate"
                 title={patient.contact_notes}
               >
                 {patient.contact_notes}
               </dd>
-            </div>
-          )}
+            ) : (
+              <dd className="text-sm text-gray-400 italic">
+                No hay notas de contacto registradas
+              </dd>
+            )}
+          </div>
         </dl>
 
         {/* Sección de acciones */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="flex flex-col items-center gap-4 w-full">
-            <div className="flex flex-wrap justify-center gap-3 w-full">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
-                Agregar Contacto de Emergencia
-              </button>
-              <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
-                Agregar Nota de Contacto
-              </button>
-              <div className="px-4 py-2">
-                <PatientStatusChanger
-                  id={patient.id}
-                  initialStatus={patient.status ?? "active"}
-                />{" "}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Nota informativa */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-start space-x-2">
-            <InformationCircleIcon className="inline-block w-4 h-4 mr-1" />
-            <div className="flex-1">
-              <p className="text-sm text-blue-800">
-                <strong>Nota:</strong> Esta información está sincronizada con el
-                sistema central. Cualquier cambio será reflejado en tiempo real.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
