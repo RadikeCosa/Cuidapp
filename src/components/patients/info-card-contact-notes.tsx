@@ -1,14 +1,28 @@
 "use client";
 
 import InlineEditableField from "../shared/inline-editable-field";
+import { updateContactNotes } from "@/app/(dashboard)/patients/actions/update-contact-notes";
+import { useRouter } from "next/navigation";
 
 interface ContactNotesProps {
   contactNotes?: string;
+  patientId: string;
 }
 
-export default function ContactNotes({ contactNotes }: ContactNotesProps) {
-  const handleSave = (newValue: string) => {
-    console.log("New contact notes:", newValue);
+export default function ContactNotes({
+  contactNotes,
+  patientId,
+}: ContactNotesProps & { patientId: string }) {
+  const router = useRouter();
+
+  const handleSave = async (newValue: string) => {
+    const result = await updateContactNotes(patientId, newValue);
+    if (result.success) {
+      console.log("Contact note updated successfully");
+      router.refresh();
+    } else {
+      console.error("Error updating contact note:", result.error);
+    }
   };
 
   return (

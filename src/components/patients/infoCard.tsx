@@ -15,7 +15,10 @@ export default function PatientInfoCard({ patient }: PatientInfoCardProps) {
       <div className="p-6">
         <dl className="grid grid-cols-1 gap-y-4">
           <EmergencyContact emergencyContact={patient.emergency_contact} />
-          <ContactNotes contactNotes={patient.contact_notes} />
+          <ContactNotes
+            contactNotes={patient.contact_notes}
+            patientId={patient.id}
+          />
         </dl>
       </div>
     </section>
