@@ -29,13 +29,21 @@ export class PatientsService {
     emergency_contact: EmergencyContact | null,
     contact_notes_data: ContactNote[] | null
   ) {
+    // Limpiar y validar el contacto de emergencia
+    const cleanEmergencyContact = emergency_contact
+      ? {
+          name: emergency_contact.name?.trim() || "",
+          phone: emergency_contact.phone?.trim() || "",
+        }
+      : undefined;
+
     return {
       ...patient,
-      emergency_contact: emergency_contact ?? undefined, // Si no hay contacto de emergencia, lo dejamos como undefined
+      emergency_contact: cleanEmergencyContact,
       contact_notes:
         contact_notes_data && contact_notes_data.length > 0
           ? contact_notes_data.map((n) => n.note).join(" | ") // Unimos las notas en un string
-          : undefined, //
+          : undefined,
     };
   }
 
@@ -65,43 +73,54 @@ export class PatientsService {
    * Obtiene un paciente por ID desde Supabase, incluyendo relaciones
    */
   static async getPatientById(id: string): Promise<Patient | null> {
-    // 1. Obtener paciente principal
-    const { data: patient, error } = await supabase
-      .from("patients")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      if (error.code === "PGRST116") return null;
-      throw new Error(error.message);
-    }
-    if (!patient) return null;
-
-    // 2. Obtener contacto de emergencia (1:1)
-    const { data: emergency_contact } = await supabase
-      .from("emergency_contacts")
-      .select("name, phone")
-      .eq("patient_id", id)
-      .single();
-
-    // 3. Obtener notas de contacto (1:N)
-    const { data: contact_notes_data } = await supabase
-      .from("contact_notes")
-      .select("note")
-      .eq("patient_id", id);
-
-    // 4. Armar el objeto paciente extendido
-    const patientWithRelations = this.buildPatientWithRelations(
-      patient as Patient,
-      emergency_contact as EmergencyContact | null,
-      contact_notes_data as ContactNote[] | null
-    );
-
-    // 5. Validar con Zod
     try {
+      // 1. Obtener paciente principal
+      const { data: patient, error } = await supabase
+        .from("patients")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        if (error.code === "PGRST116") return null;
+        throw new Error(error.message);
+      }
+      if (!patient) return null;
+
+      // 2. Obtener contacto de emergencia (1:1) - manejar caso sin contacto
+      const { data: emergency_contact, error: emergencyError } = await supabase
+        .from("emergency_contacts")
+        .select("name, phone")
+        .eq("patient_id", id)
+        .single();
+
+      // Si no hay contacto de emergencia (error PGRST116), es válido
+      const emergencyContactData =
+        emergencyError?.code === "PGRST116" ? null : emergency_contact;
+
+      // 3. Obtener notas de contacto (1:N)
+      const { data: contact_notes_data } = await supabase
+        .from("contact_notes")
+        .select("note")
+        .eq("patient_id", id);
+
+      // 4. Armar el objeto paciente extendido
+      const patientWithRelations = this.buildPatientWithRelations(
+        patient as Patient,
+        emergencyContactData as EmergencyContact | null,
+        contact_notes_data as ContactNote[] | null
+      );
+
+      // Debug: Log the data before validation
+      console.log("Patient data before validation:", {
+        id: patientWithRelations.id,
+        emergency_contact: patientWithRelations.emergency_contact,
+      });
+
+      // 5. Validar con Zod
       return validatePatient(patientWithRelations);
-    } catch {
+    } catch (error) {
+      console.error("Error in getPatientById:", error);
       return null;
     }
   }
@@ -126,5 +145,126 @@ export class PatientsService {
 
     if (error) return { error };
     return { data };
+  }
+
+  /**
+   * Actualiza o crea un contacto de emergencia para un paciente
+   */
+  static async updateEmergencyContact(
+    patientId: string,
+    name: string,
+    phone: string
+  ) {
+    try {
+      // Verificar si ya existe un contacto de emergencia
+      const { data: existingContact, error: fetchError } = await supabase
+        .from("emergency_contacts")
+        .select("id")
+        .eq("patient_id", patientId)
+        .limit(1);
+
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
+
+      if (existingContact && existingContact.length > 0) {
+        // Actualizar contacto existente
+        const contactId = existingContact[0].id;
+        const { error: updateError } = await supabase
+          .from("emergency_contacts")
+          .update({ name, phone })
+          .eq("id", contactId);
+
+        if (updateError) {
+          throw new Error(updateError.message);
+        }
+      } else {
+        // Crear nuevo contacto
+        const { error: insertError } = await supabase
+          .from("emergency_contacts")
+          .insert({ patient_id: patientId, name, phone });
+
+        if (insertError) {
+          throw new Error(insertError.message);
+        }
+      }
+
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      };
+    }
+  }
+
+  /**
+   * Actualiza o crea una nota de contacto para un paciente
+   */
+  static async updateContactNotes(patientId: string, contactNote: string) {
+    try {
+      // Verificar si ya existe una nota asociada al paciente
+      const { data: existingNotes, error: fetchError } = await supabase
+        .from("contact_notes")
+        .select("id")
+        .eq("patient_id", patientId)
+        .limit(1);
+
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
+
+      if (existingNotes && existingNotes.length > 0) {
+        // Actualizar nota existente
+        const noteId = existingNotes[0].id;
+        const { error: updateError } = await supabase
+          .from("contact_notes")
+          .update({ note: contactNote })
+          .eq("id", noteId);
+
+        if (updateError) {
+          throw new Error(updateError.message);
+        }
+      } else {
+        // Insertar nueva nota
+        const { error: insertError } = await supabase
+          .from("contact_notes")
+          .insert({ patient_id: patientId, note: contactNote });
+
+        if (insertError) {
+          throw new Error(insertError.message);
+        }
+      }
+
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      };
+    }
+  }
+
+  /**
+   * Actualiza el status de un paciente
+   */
+  static async updatePatientStatus(patientId: string, newStatus: string) {
+    try {
+      const { error } = await supabase
+        .from("patients")
+        .update({ status: newStatus })
+        .eq("id", patientId);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      };
+    }
   }
 }

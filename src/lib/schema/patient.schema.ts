@@ -32,15 +32,17 @@ export const PatientSchema = z.object({
   phone: z
     .string()
     .regex(/^[\d\s\-\+\(\)]+$/, "Teléfono contiene caracteres inválidos")
+    .or(z.literal(""))
     .optional(),
   // Nuevos campos de contacto
   email: z.string().email("Email inválido").optional(),
   emergency_contact: z
     .object({
-      name: z.string().trim().optional(),
+      name: z.string().trim().or(z.literal("")).optional(),
       phone: z
         .string()
         .regex(/^[\d\s\-\+\(\)]+$/, "Teléfono contiene caracteres inválidos")
+        .or(z.literal(""))
         .optional(),
     })
     .optional(),

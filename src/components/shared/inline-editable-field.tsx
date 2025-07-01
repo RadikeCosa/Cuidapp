@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { PencilIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface InlineEditableFieldProps {
   value: string;
@@ -16,7 +17,6 @@ export default function InlineEditableField({
   const [currentValue, setCurrentValue] = useState(value);
 
   const handleSave = () => {
-    console.log("Saving value:", currentValue);
     onSave(currentValue);
     setIsEditing(false);
   };
@@ -35,31 +35,37 @@ export default function InlineEditableField({
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
             placeholder={placeholder}
-            className="border rounded px-2 py-1 text-sm w-full"
+            className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleSave}
-            className="text-green-500 hover:underline text-sm"
+            className="p-1 rounded text-green-600 hover:bg-green-100"
+            title="Guardar"
           >
-            Confirmar
+            <CheckIcon className="w-5 h-5" />
           </button>
           <button
             onClick={handleCancel}
-            className="text-red-500 hover:underline text-sm"
+            className="p-1 rounded text-red-600 hover:bg-red-100"
+            title="Cancelar"
           >
-            Cancelar
+            <XMarkIcon className="w-5 h-5" />
           </button>
         </>
       ) : (
         <>
-          <span className="text-sm text-gray-900 truncate" title={value}>
+          <span
+            className="text-sm text-gray-900 truncate cursor-default"
+            title={value}
+          >
             {value || placeholder}
           </span>
           <button
             onClick={() => setIsEditing(true)}
-            className="text-blue-500 hover:underline text-sm"
+            className="p-1 rounded text-blue-600 hover:bg-blue-100"
+            title="Editar"
           >
-            ✏️
+            <PencilIcon className="w-5 h-5" />
           </button>
         </>
       )}
