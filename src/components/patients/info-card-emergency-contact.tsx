@@ -57,7 +57,7 @@ export default function EmergencyContact({
       <h3 className="text-sm font-medium text-gray-900">
         Contacto de Emergencia
       </h3>
-      <div className="flex items-center gap-2">
+      <div className="group">
         <dt className="sr-only">Nombre de contacto de emergencia</dt>
         <InlineEditableField
           value={emergencyContact?.name || "Sin nombre"}
@@ -65,7 +65,7 @@ export default function EmergencyContact({
           placeholder="Editar nombre"
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="group">
         <dt className="sr-only">Teléfono de emergencia</dt>
         <InlineEditableField
           value={emergencyContact?.phone || "Sin teléfono"}

@@ -267,4 +267,77 @@ export class PatientsService {
       };
     }
   }
+  /**
+   * Actualiza un campo específico de un paciente
+   */
+  static async updatePatientField(
+    patientId: string,
+    fieldName: string,
+    value: string
+  ) {
+    try {
+      // Validación básica por campo
+      if (fieldName === "email" && value && value.trim() !== "") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          return {
+            success: false,
+            error: "Email inválido",
+          };
+        }
+      }
+
+      if (fieldName === "dni" && value && value.trim() !== "") {
+        const dniRegex = /^\d{7,8}$/;
+        if (!dniRegex.test(value)) {
+          return {
+            success: false,
+            error: "DNI debe tener entre 7 y 8 dígitos",
+          };
+        }
+      }
+
+      if (fieldName === "phone" && value && value.trim() !== "") {
+        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+        if (!phoneRegex.test(value)) {
+          return {
+            success: false,
+            error: "Teléfono contiene caracteres inválidos",
+          };
+        }
+      }
+
+      if (fieldName === "name" && (!value || value.trim() === "")) {
+        return {
+          success: false,
+          error: "El nombre es requerido",
+        };
+      }
+
+      if (fieldName === "city" && (!value || value.trim() === "")) {
+        return {
+          success: false,
+          error: "La ciudad es requerida",
+        };
+      }
+
+      const updateData = { [fieldName]: value.trim() };
+
+      const { error } = await supabase
+        .from("patients")
+        .update(updateData)
+        .eq("id", patientId);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      };
+    }
+  }
 }
