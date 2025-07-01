@@ -5,11 +5,7 @@ import { formatGender } from "@/lib/utils/patient-utils";
 import PatientStatus from "../shared/status";
 import type { Patient } from "@/lib/schema/patient.schema";
 import Image from "next/image";
-import {
-  MapPinIcon,
-  PhoneIcon,
-  AtSymbolIcon,
-} from "@heroicons/react/24/outline";
+import { PhoneIcon, AtSymbolIcon } from "@heroicons/react/24/outline";
 import InlineEditableField from "../shared/inline-editable-field";
 import { useRouter } from "next/navigation";
 import {
