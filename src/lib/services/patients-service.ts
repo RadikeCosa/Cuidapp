@@ -149,10 +149,28 @@ export class PatientsService {
       console.error("Error fetching stats:", error);
       // Retornar estadísticas vacías en caso de error para evitar fallos de build
       return {
-        statusDistribution: { active: 0, inactive: 0, deceased: 0 },
-        geographicStats: [],
-        demographicStats: { averageAge: 0, ageGroups: {} },
-        genderDistribution: { male: 0, female: 0, other: 0, unknown: 0 },
+        statusDistribution: {
+          counts: { active: 0, inactive: 0, deceased: 0 },
+          percentages: { active: 0, inactive: 0, deceased: 0 },
+          total: 0,
+          dominant: "active" as const,
+        },
+        geographicStats: {
+          totalCities: 0,
+          topCities: [],
+          coverage: { withCity: 0, total: 0 },
+        },
+        demographicStats: {
+          ageStats: { average: 0, youngest: 0, oldest: 0 },
+          dominantAgeGroup: "N/A",
+          totalWithAgeData: 0,
+        },
+        genderDistribution: {
+          counts: { male: 0, female: 0, other: 0, unknown: 0 },
+          percentages: { male: 0, female: 0, other: 0, unknown: 0 },
+          total: 0,
+          dominant: "unknown" as const,
+        },
       };
     }
   }
