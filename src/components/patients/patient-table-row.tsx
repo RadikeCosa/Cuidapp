@@ -1,7 +1,7 @@
 // src/components/patients/patient-table-row.tsx
 import Image from "next/image";
 import Link from "next/link";
-import PatientStatus from "@/components/patients/status";
+import PatientStatus from "@/components/shared/status";
 import { formatAge } from "@/lib/utils/dateUtils";
 import type { Patient } from "@/lib/schema/patient.schema";
 
