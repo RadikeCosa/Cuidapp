@@ -18,7 +18,7 @@ export default function AddressSection({
   onSaveCity,
 }: AddressSectionProps) {
   const getGoogleMapsUrl = () => {
-    const addressParts = [patient.address, patient.neighborhood, patient.city]
+    const addressParts = [patient.address, patient.city]
       .filter(Boolean)
       .join(", ");
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(

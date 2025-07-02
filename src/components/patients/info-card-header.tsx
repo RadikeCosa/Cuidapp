@@ -8,7 +8,7 @@ import { PhoneIcon, AtSymbolIcon } from "@heroicons/react/24/outline";
 import InlineEditableField from "../shared/inline-editable-field";
 import { useRouter } from "next/navigation";
 import { updatePatientFieldAction } from "@/app/(dashboard)/patients/actions/update-patient-data";
-import AddressSection from "./address-section";
+import AddressSection from "./info-card-address-section";
 
 interface PatientInfoCardHeaderProps {
   patient: Patient;
