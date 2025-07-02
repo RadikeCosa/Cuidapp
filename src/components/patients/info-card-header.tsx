@@ -1,5 +1,4 @@
 "use client";
-
 import { formatAge, formatDateToLocal } from "@/lib/utils/dateUtils";
 import { formatGender } from "@/lib/utils/patient-utils";
 import PatientStatus from "../shared/status";
@@ -8,15 +7,7 @@ import Image from "next/image";
 import { PhoneIcon, AtSymbolIcon } from "@heroicons/react/24/outline";
 import InlineEditableField from "../shared/inline-editable-field";
 import { useRouter } from "next/navigation";
-import {
-  updatePatientName,
-  updatePatientDni,
-  updatePatientPhone,
-  updatePatientEmail,
-  updatePatientAddress,
-  updatePatientCity,
-  updatePatientNeighborhood,
-} from "@/app/(dashboard)/patients/actions/update-patient-data";
+import { updatePatientFieldAction } from "@/app/(dashboard)/patients/actions/update-patient-data";
 import AddressSection from "./address-section";
 
 interface PatientInfoCardHeaderProps {
@@ -28,73 +19,17 @@ export default function PatientInfoCardHeader({
 }: PatientInfoCardHeaderProps) {
   const router = useRouter();
 
-  const handleSaveName = async (newValue: string) => {
-    const result = await updatePatientName(patient.id, newValue);
+  // Handler genérico para actualizar cualquier campo
+  const handleFieldSave = async (
+    field: string,
+    value: string,
+    label: string
+  ) => {
+    const result = await updatePatientFieldAction(patient.id, field, value);
     if (result.success) {
       router.refresh();
     } else {
-      console.error("Error updating patient name:", result.error);
-      alert(`Error al actualizar el nombre: ${result.error}`);
-    }
-  };
-
-  const handleSaveDni = async (newValue: string) => {
-    const result = await updatePatientDni(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient DNI:", result.error);
-      alert(`Error al actualizar el DNI: ${result.error}`);
-    }
-  };
-
-  const handleSavePhone = async (newValue: string) => {
-    const result = await updatePatientPhone(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient phone:", result.error);
-      alert(`Error al actualizar el teléfono: ${result.error}`);
-    }
-  };
-
-  const handleSaveEmail = async (newValue: string) => {
-    const result = await updatePatientEmail(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient email:", result.error);
-      alert(`Error al actualizar el correo: ${result.error}`);
-    }
-  };
-
-  const handleSaveAddress = async (newValue: string) => {
-    const result = await updatePatientAddress(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient address:", result.error);
-      alert(`Error al actualizar la dirección: ${result.error}`);
-    }
-  };
-
-  const handleSaveCity = async (newValue: string) => {
-    const result = await updatePatientCity(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient city:", result.error);
-      alert(`Error al actualizar la ciudad: ${result.error}`);
-    }
-  };
-
-  const handleSaveNeighborhood = async (newValue: string) => {
-    const result = await updatePatientNeighborhood(patient.id, newValue);
-    if (result.success) {
-      router.refresh();
-    } else {
-      console.error("Error updating patient neighborhood:", result.error);
-      alert(`Error al actualizar el barrio: ${result.error}`);
+      alert(`Error al actualizar ${label}: ${result.error}`);
     }
   };
   return (
@@ -116,7 +51,7 @@ export default function PatientInfoCardHeader({
           <div className="mb-1 group">
             <InlineEditableField
               value={patient.name}
-              onSave={handleSaveName}
+              onSave={(val) => handleFieldSave("name", val, "nombre")}
               placeholder="Editar nombre"
               variant="title"
             />
@@ -130,7 +65,7 @@ export default function PatientInfoCardHeader({
               <span className="mr-2">DNI:</span>
               <InlineEditableField
                 value={patient.dni || "Sin DNI"}
-                onSave={handleSaveDni}
+                onSave={(val) => handleFieldSave("dni", val, "DNI")}
                 placeholder="Editar DNI"
                 variant="small"
               />
@@ -146,9 +81,11 @@ export default function PatientInfoCardHeader({
       <div className="space-y-2 mt-4">
         <AddressSection
           patient={patient}
-          onSaveAddress={handleSaveAddress}
-          onSaveNeighborhood={handleSaveNeighborhood}
-          onSaveCity={handleSaveCity}
+          onSaveAddress={(val) => handleFieldSave("address", val, "dirección")}
+          onSaveNeighborhood={(val) =>
+            handleFieldSave("neighborhood", val, "barrio")
+          }
+          onSaveCity={(val) => handleFieldSave("city", val, "ciudad")}
         />
 
         <div className="group">
@@ -157,7 +94,7 @@ export default function PatientInfoCardHeader({
             <PhoneIcon className="inline-block w-4 h-4 mr-1 flex-shrink-0" />
             <InlineEditableField
               value={patient.phone || "Sin teléfono"}
-              onSave={handleSavePhone}
+              onSave={(val) => handleFieldSave("phone", val, "teléfono")}
               placeholder="Editar teléfono"
             />
           </dd>
@@ -169,7 +106,7 @@ export default function PatientInfoCardHeader({
             <AtSymbolIcon className="inline-block w-4 h-4 mr-1 flex-shrink-0" />
             <InlineEditableField
               value={patient.email || "Sin correo"}
-              onSave={handleSaveEmail}
+              onSave={(val) => handleFieldSave("email", val, "correo")}
               placeholder="Editar correo"
             />
           </dd>

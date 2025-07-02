@@ -62,7 +62,6 @@ export default function EmergencyContact({
         <InlineEditableField
           value={emergencyContact?.name || "Sin nombre"}
           onSave={handleSaveName}
-          placeholder="Editar nombre"
         />
       </div>
       <div className="group">
@@ -70,7 +69,6 @@ export default function EmergencyContact({
         <InlineEditableField
           value={emergencyContact?.phone || "Sin teléfono"}
           onSave={handleSavePhone}
-          placeholder="Editar teléfono"
         />
       </div>
     </div>

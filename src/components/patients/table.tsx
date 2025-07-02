@@ -34,7 +34,7 @@ export default function PatientsTable({ patients }: PatientsTableProps) {
             <PatientTableRow
               key={patient.id}
               patient={patient}
-              className={index % 2 === 0 ? "bg-white" : "bg-gray-50/30"}
+              className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
             />
           ))}
         </tbody>

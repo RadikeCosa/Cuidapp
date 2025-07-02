@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { PencilIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface InlineEditableFieldProps {
@@ -9,6 +9,8 @@ interface InlineEditableFieldProps {
   variant?: "default" | "title" | "small";
   className?: string;
   renderValue?: (value: string) => React.ReactNode;
+  type?: "text" | "date" | "select";
+  options?: { label: string; value: string }[];
 }
 
 export default function InlineEditableField({
@@ -18,6 +20,8 @@ export default function InlineEditableField({
   variant = "default",
   className = "",
   renderValue,
+  type = "text",
+  options = [],
 }: InlineEditableFieldProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
@@ -81,14 +85,29 @@ export default function InlineEditableField({
     <div className={`flex items-center justify-between w-full ${className}`}>
       {isEditing ? (
         <div className="flex items-center gap-2 flex-1">
-          <input
-            type="text"
-            value={currentValue}
-            onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder={placeholder}
-            className={getInputStyles()}
-            autoFocus
-          />
+          {type === "select" ? (
+            <select
+              value={currentValue}
+              onChange={(e) => setCurrentValue(e.target.value)}
+              className={getInputStyles()}
+              autoFocus
+            >
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type={type}
+              value={currentValue}
+              onChange={(e) => setCurrentValue(e.target.value)}
+              placeholder={placeholder}
+              className={getInputStyles()}
+              autoFocus
+            />
+          )}
           <div className="flex items-center gap-1 flex-shrink-0">
             <button
               onClick={handleCancel}

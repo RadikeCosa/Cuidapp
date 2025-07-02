@@ -27,7 +27,7 @@ export default function SideNav({
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 md:static md:w-64 md:h-full`}
     >
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between  border-gray-200">
         <button
           onClick={() => setSidebarOpen(false)}
           aria-label="Close menu"

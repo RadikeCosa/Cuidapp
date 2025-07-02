@@ -1,7 +1,6 @@
 // src/components/patients/patients-section.tsx
 import { PatientsService } from "@/lib/services/patients-service";
 import PatientsTable from "./table";
-import PatientsCount from "./patient-count";
 import Pagination from "./pagination";
 
 interface PatientsSectionProps {
@@ -22,14 +21,8 @@ export async function PatientsSection({ searchParams }: PatientsSectionProps) {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="space-y-6">
-      {/* Contador */}
-      <PatientsCount count={patients.length} />
-
-      {/* Tabla */}
+    <div>
       <PatientsTable patients={patients} />
-
-      {/* Paginación */}
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
