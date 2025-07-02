@@ -1,7 +1,7 @@
 "use client";
 import { formatAge, formatDateToLocal } from "@/lib/utils/dateUtils";
 import { formatGender } from "@/lib/utils/patient-utils";
-import PatientStatus from "../shared/status";
+import PatientStatusEditable from "../shared/patient-status-editable";
 import type { Patient } from "@/lib/schema/patient.schema";
 import Image from "next/image";
 import { PhoneIcon, AtSymbolIcon } from "@heroicons/react/24/outline";
@@ -44,7 +44,11 @@ export default function PatientInfoCardHeader({
             className="rounded-full object-cover ring-4 ring-white/20"
           />
           <div className="absolute -bottom-2 -right-2">
-            <PatientStatus status={patient.status} size="lg" />
+            <PatientStatusEditable
+              patientId={patient.id}
+              status={patient.status}
+              size="lg"
+            />
           </div>
         </div>
         <div className="flex-1 min-w-0">
